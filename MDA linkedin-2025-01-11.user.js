@@ -1,12 +1,13 @@
 // ==UserScript==
 // @name         MDA linkedin
 // @namespace    http://tampermonkey.net/
-// @version      2025-01-11 v1.5
-// @description  try to take over the world!
-// @author       You
+// @version      1.5.1
+// @description  my linkedin improvements started 2025-01-11
+// @author       mr-d-r
+// @license      MIT
 // @match        http*://*.linkedin.com/*
 // @grant        GM_addStyle
-// @require      https://github.com/mr-d-r/sites_improvements/blob/main/_MDAlib_tampermonkey.js
+// @require      https://update.greasyfork.org/scripts/524553/1525219/MDA%20library.js
 // ==/UserScript==
 
 
@@ -90,7 +91,7 @@ window.addEventListener('keydown', (e) => {     // window.addEventListener("keyu
     switch (e.code) {  // see https://www.freecodecamp.org/news/javascript-keycode-list-keypress-event-key-codes/
     	 case "KeyA":
 				//log(`KeyA: clicked`);
-				myActions(`onKeyA`);  // chk upd 111
+				myActions(`onKeyA`);  // chk upd 111 222
 				e.preventDefault();
 				break;
     	 case "KeyE":  // Endorse
