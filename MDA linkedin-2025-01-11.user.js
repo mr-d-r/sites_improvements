@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         MDA linkedin
 // @namespace    http://tampermonkey.net/
-// @version      2025-01-11
+// @version      2025-01-11 v1.5
 // @description  try to take over the world!
 // @author       You
 // @match        http*://*.linkedin.com/*
