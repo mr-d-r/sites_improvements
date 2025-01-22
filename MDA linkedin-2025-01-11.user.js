@@ -91,7 +91,7 @@ window.addEventListener('keydown', (e) => {     // window.addEventListener("keyu
     switch (e.code) {  // see https://www.freecodecamp.org/news/javascript-keycode-list-keypress-event-key-codes/
     	 case "KeyA":
 				//log(`KeyA: clicked`);
-				myActions(`onKeyA`);  // chk upd 111 222
+				myActions(`onKeyA`);  // chk upd 111 222 333
 				e.preventDefault();
 				break;
     	 case "KeyE":  // Endorse
