@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         MDA linkedin improvements
 // @namespace    http://tampermonkey.net/
-// @version      1.5.4
+// @version      1.5.5
 // @description  my linkedin improvements started 2025-01-11
 // @author       mr-d-r
 // @license      MIT
@@ -91,7 +91,7 @@ window.addEventListener('keydown', (e) => {     // window.addEventListener("keyu
     switch (e.code) {  // see https://www.freecodecamp.org/news/javascript-keycode-list-keypress-event-key-codes/
     	 case "KeyA":
 				//log(`KeyA: clicked`);
-				myActions(`onKeyA`);  // chk upd 111 222 333 444
+				myActions(`onKeyA`);  // chk upd 111 222 333 444 555
 				e.preventDefault();
 				break;
     	 case "KeyE":  // Endorse
