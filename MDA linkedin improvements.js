@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         MDA linkedin improvements
 // @namespace    http://tampermonkey.net/
-// @version      1.5.2
+// @version      1.5.3
 // @description  my linkedin improvements started 2025-01-11
 // @author       mr-d-r
 // @license      MIT
