@@ -6,7 +6,7 @@
 // @author       You
 // @match        http*://*.linkedin.com/*
 // @grant        GM_addStyle
-// @require      file://D:\Work\gdrive_obs\myJavascript\_MDAlib_tampermonkey.js
+// @require      https://github.com/mr-d-r/sites_improvements/blob/main/_MDAlib_tampermonkey.js
 // ==/UserScript==
 
 
