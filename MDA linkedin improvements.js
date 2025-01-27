@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         MDA linkedin improvements
 // @namespace    http://tampermonkey.net/
-// @version      1.5.6
+// @version      1.5.7
 // @description  my linkedin improvements started 2025-01-11
 // @author       mr-d-r
 // @license      MIT
@@ -10,7 +10,7 @@
 // @require      https://update.greasyfork.org/scripts/524553/1525219/MDA%20library.js
 // ==/UserScript==
 
-// update check
+// update check 37.01.2025
 
 (function() {
     'use strict';
