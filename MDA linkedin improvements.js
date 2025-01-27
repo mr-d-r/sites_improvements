@@ -10,7 +10,7 @@
 // @require      https://update.greasyfork.org/scripts/524553/1525219/MDA%20library.js
 // ==/UserScript==
 
-// update check 37.01.2025
+// update check 27.01.2025
 
 (function() {
     'use strict';
