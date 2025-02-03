@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         MDA kinopoisk add google, rezka, imdb search
 // @namespace    http://tampermonkey.net/
-// @version      1.3
+// @version      1.4
 // @description  adds extra links to useful sites
 // @author       mr-d-r
 // @match        http*://*.kinopoisk.ru/*
@@ -35,7 +35,7 @@
 
 
 (function() {
-    'use strict';
+    // 'use strict';  // getFunctionsNameThatCalledThisFunction глючит в строгом режиме
 	var dbg=0,  aa, bb, 	myLinkID="mda_n", 	onLOADlck=false, onLOADlckTMOUT=2500,  myINITlck=false, myStyleADDED=false,  wlh=WLH();
 	console.log("\n", "\n", `${GM.info.script.name}: start -> ${wlh}  debug=${(typeof dbg == "undefined") ? "absent" : dbg}  MDAlib=${(typeof MDAlib == "undefined") ? "absent" : MDAlib}` );
 
