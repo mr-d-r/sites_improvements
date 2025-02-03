@@ -7,7 +7,7 @@
 // @match        http*://*.kinopoisk.ru/*
 // @icon         https://www.google.com/s2/favicons?sz=64&domain=kinopoisk.ru
 // @grant        GM_addStyle
-// @require      file://D:\Work\gdrive_obs\myJavascript\_MDAlib_tampermonkey.js
+// @require      https://update.greasyfork.org/scripts/524553/1525219/MDA%20library.js
 // ==/UserScript==
 
 
