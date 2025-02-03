@@ -2,8 +2,8 @@
 // @name         MDA kinopoisk add google, rezka, imdb search
 // @namespace    http://tampermonkey.net/
 // @version      1.3
-// @description  try to take over the world!
-// @author       You
+// @description  adds extra links to useful sites
+// @author       mr-d-r
 // @match        http*://*.kinopoisk.ru/*
 // @icon         https://www.google.com/s2/favicons?sz=64&domain=kinopoisk.ru
 // @grant        GM_addStyle
