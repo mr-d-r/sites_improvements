@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         MDA kinopoisk add google, rezka, imdb search
 // @namespace    http://tampermonkey.net/
-// @version      2025-01-11
+// @version      1.3
 // @description  try to take over the world!
 // @author       You
 // @match        http*://*.kinopoisk.ru/*
