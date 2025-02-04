@@ -1,13 +1,13 @@
 // ==UserScript==
 // @name         MDA IMDB pictures save
 // @namespace    http://tampermonkey.net/
-// @version      2024-08-04
-// @description  try to take over the world!
-// @author       You
+// @version      1.7
+// @description  imdb improvements
+// @author       mr-d-r
 // @match        https://www.imdb.com/*
 // @icon         https://www.google.com/s2/favicons?sz=64&domain=imdb.com
 // @grant        none
-// @require      file://D:\Work\gdrive_obs\myJavascript\_MDAlib_tampermonkey.js
+// @require      https://update.greasyfork.org/scripts/524553/1525219/MDA%20library.js
 // ==/UserScript==
 
 
