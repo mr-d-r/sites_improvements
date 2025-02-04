@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         MDA kinopoisk add google, rezka, imdb search
 // @namespace    http://tampermonkey.net/
-// @version      1.4
+// @version      1.5
 // @description  adds extra links to useful sites
 // @author       mr-d-r
 // @license      MIT
