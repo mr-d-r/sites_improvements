@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         MDA IMDB pictures save
 // @namespace    http://tampermonkey.net/
-// @version      1.9
+// @version      1.9.1
 // @description  imdb improvements
 // @author       mr-d-r
 // @license      MIT
