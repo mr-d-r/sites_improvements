@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         MDA IMDB pictures save
 // @namespace    http://tampermonkey.net/
-// @version      1.7
+// @version      1.8
 // @description  imdb improvements
 // @author       mr-d-r
 // @match        https://www.imdb.com/*
@@ -119,7 +119,7 @@ console.log(Anim.var222);
 
 
     function showmsgIMDB (msg, durat, hook="")  {   // ``` ёёё
-        let aa, mydivBase="showmsgQAX",   mydivTitle="showmsgCOMMONtitle";   //,   myDivN=mydivBase;
+        let aa, mydiv, mydivBase="showmsgQAX",   mydivTitle="showmsgCOMMONtitle";   //,   myDivN=mydivBase;
         var pareFou=qS(hook);   if(!pareFou)  { console.log("hook is not found");  return; }
 		aa=qS("#" +mydivBase);  // console.log("mydiv exist?", aa);
         if(!aa) 	mydiv = document.createElement("div");  	// create new
