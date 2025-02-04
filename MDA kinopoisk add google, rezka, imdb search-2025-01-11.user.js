@@ -4,6 +4,7 @@
 // @version      1.4
 // @description  adds extra links to useful sites
 // @author       mr-d-r
+// @license      MIT
 // @match        http*://*.kinopoisk.ru/*
 // @icon         https://www.google.com/s2/favicons?sz=64&domain=kinopoisk.ru
 // @grant        GM_addStyle
