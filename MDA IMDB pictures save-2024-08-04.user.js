@@ -1,9 +1,10 @@
 // ==UserScript==
 // @name         MDA IMDB pictures save
 // @namespace    http://tampermonkey.net/
-// @version      1.8
+// @version      1.9
 // @description  imdb improvements
 // @author       mr-d-r
+// @license      MIT
 // @match        https://www.imdb.com/*
 // @icon         https://www.google.com/s2/favicons?sz=64&domain=imdb.com
 // @grant        none
