@@ -106,7 +106,7 @@ console.log(Anim.var222);
 
 
 (function() {
-    'use strict';
+    //'use strict';
 
 
 	function showAlert (msg, delay=2000, hook="") { 	// show message bound to HTML element
