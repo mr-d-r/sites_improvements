@@ -1,9 +1,10 @@
 // ==UserScript==
-// @name         MDA google DEVEL
+// @name         MDA google
 // @namespace    http://tampermonkey.net/
-// @version      1.6
+// @version      1.61
 // @description  adds extra links to useful sites
-// @author       You
+// @author       mr-d-r
+// @license      MIT
 // @exclude      http*://ogs.google.com/*
 // @exclude      http*://accounts.google.com/*
 // @exclude      http*://*.google.com/recaptcha/*
@@ -13,7 +14,7 @@
 // @grant        GM_addStyle
 // @grant           GM.setValue
 // @grant           GM.getValue
-// @require      file://D:\Work\gdrive_obs\myJavascript\_MDAlib_tampermonkey.js
+// @require      https://update.greasyfork.org/scripts/524553/1525219/MDA%20library.js
 // ==/UserScript==
 
 // добавлять поиск ключевых слов по *.md локального обсидиана !!!
