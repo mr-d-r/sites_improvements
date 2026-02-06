@@ -1,3 +1,12 @@
+
+
+
+//      выложил на github mr-d-r
+//                 не оставлять тут ничего личного !!!
+
+
+
+
 // @require  file://D:\...\_MDAlib_tampermonkey.js ВСЕГДА добавляет в самое начало скрипта, где он использован
 // т.о. переменные объявленные здесь всегда глобальные !!!
 
@@ -5,7 +14,29 @@
 // пробовать делать библиотеку, которая запускается на каждой странице
 
 var MDAlib="included",  dbg;  // real global vars !!!  // dbg - отладка    // verb - немного расширенные сообщения
+var scrStartTime=Date.now();  // script start time
+// deprecated: var smartARR=[];  // общий массив для smartARR и smartARR
 // localStorage.setItem("MDAlib", "loaded @"  +Date.now());
+
+const   doc=document; // alias for document. !!!
+
+
+// сделать  MDAlib_startProc()
+/*
+	var dbg=0, wlh=WLH(), sT=Date.now();
+	if( !document.gsT ) {   doc.scriptStartTime=Date.now();  // global start time of first script on the page
+                            doc.scriptStartTime_createdBy=GM.info.script.name;
+							log(`${GM.info.script.name}: start -> ${wlh}  created NEW scriptStartTime`);
+	} else {				log(`${GM.info.script.name}: start -> ${wlh}  found existing scriptStartTime created by ${document.gsT_createdBy}`);		}
+	
+    // replace gsT  !!! doc.scriptStartTime_createdBy
+    
+    if(document.gsT) aa=(sT-document.gsT)/1000;  else aa='n/a';
+	if(document.gsT) bb=(sT-scrStartTime)/1000;  else bb='n/a';
+	console.log("\n", "\n", `${GM.info.script.name}: start -> ${wlh}  since gsT: ${aa}sec   since scrStartTime: ${bb}` );
+*/
+
+
 
 	// !!! в скриптах можно проверять так:
     //  MDAlib=${(typeof MDAlib == "undefined") ? "absent" : MDAlib}
@@ -19,33 +50,68 @@ var	err = console.error.bind(console),
 	log = console.log.bind(console),
 */
 
+// works for sessionStorage & localStorage !!! https://stackoverflow.com/questions/2010892/how-to-store-objects-in-html5-localstorage-sessionstorage
+Storage.prototype.putObjMDA = function(key, value) 	{ 	if (!key || !value) {return;}; 		this.setItem(key, JSON.stringify(value)); 	} 	// https://stackoverflow.com/questions/2010892/how-to-store-objects-in-html5-localstorage-sessionstorage
+Storage.prototype.getObjMDA = function(key) 		{ 	if (!key) 			{return;} 		return JSON.parse(this.getItem(key)); 		}
+
+
+function hmsToSec (str) {  // convert time hh:mm:ss to seconds - leading zeroes are not mandatory - does NOT process hh:mm:ss.msec !!!
+    var p = str.split(':'),        s = 0, m = 1;
+    while (p.length > 0) {        s += m * parseInt(p.pop(), 10);        m *= 60;    }
+    return s;
+} // hmsToSec()
+
+
+function fromHTML123 (html, trim = true) {
+    // Process the HTML string.
+    html = trim ? html : html.trim();
+    if (!html) return null;
+  
+    // Then set up a new template element.
+    const template = document.createElement('template');
+    template.innerHTML = html;
+    const result = template.content.children;
+  
+    // Then return either an HTMLElement or HTMLCollection,
+    // based on whether the input HTML had one or more roots.
+    if (result.length === 1) return result[0];
+    return result;
+}
+
+
 	function anyActiveInput () {
 		if( Array.from(document.querySelectorAll("input,textarea")).includes(document.activeElement) ) 	return true;
 		if( document.activeElement.contentEditable == 'true' )							return true; 	// for stupid youtube reply mini-window  // !!! warning:  MUST BE: document.activeElement.contentEditable == true
 		if( document.activeElement.querySelector('span[data-lexical-text="true"]') ) 	return true; 	// for stupid facebook input fields
-		//if ((aaBB = document.activeElement) && (editable(a) || (a.tagName === "INPUT") || (a.tagName === "TEXTAREA"))) return;
+        // попробовать интересный вариант
+        //   const activeElement = document.activeElement;
+        //   const isTextInput = activeElement.tagName === 'INPUT' || activeElement.tagName === 'TEXTAREA' || activeElement.isContentEditable;
+        //if ((aaBB = document.activeElement) && (editable(a) || (a.tagName === "INPUT") || (a.tagName === "TEXTAREA"))) return;
 	} // anyActiveInput()
 
 
     function ttout (delay, func) {  // wrap for setTimeout()  // WORKS
+        if(dbg) console.log(`ttout debug: ${delay}  ${func}`)
         setTimeout(() => { 		func();		}, delay);
     } // ttout()
     var  tTO=ttout;
 
 
     function ttoutSMART (delay=1000, label, cmd='new', func) {  // wrap for setTimeout()  // static массив всех вызванных таймеров с метками
+        // del срабатывает немедленно при вызове
         let a, b, hnd, min=10000, max=99999,   fn=fnName();
-        if ( typeof ttout.arr == 'undefined' ) {    ttout.arr = [];  if(dbg && dbg>5) log(`${fn}: static arr init`); }
+        if ( typeof ttoutSMART.arr == 'undefined' ) {    ttoutSMART.arr = [];  if(dbg && dbg>5) log(`${fn}: static arr init`); }
         if( ! isNumber(delay) ) {  console.error(`${fn}: delay is not a number: ${delay}`);   return;  }  // isNumeric:function(a){return!isNaN(parseFloat(a))&&isFinite(a)
         switch (cmd) {
             case 'chk':     case 'exists':      case 'exist':
-                            if(  a=ttout.arr.find( (el) => el.label == label )  )   return a;  // a.hnd
+                            if(  a=ttoutSMART.arr.find( (el) => el.label == label )  )   return a;  // a.hnd
                             else                                                    return false;
                             break;
             case 'list':    showArrQvTyIk();
                             break;
             case 'del':     // delete by label from array
-            case 'delete':  delQvTyIk(label);
+            case 'delete':	setTimeout(() => 	{ 	delQvTyIk(label);	},delay);
+                            // delQvTyIk(label); // old way
                             break;
             default:        // create new or update existing
             case 'new':
@@ -55,22 +121,77 @@ var	err = console.error.bind(console),
                             hnd=setTimeout(() => { 		func();		}, delay);
                             b=setTimeout(()=>{  //log(`deleting on TIMEOUT ${label}`);
                                                 delQvTyIk(label);              		}, delay+3);  // по истечении таймера удалить его из массива !!!
-                            ttout.arr.push( { label: label,  hnd: hnd,  hnd2: b,  delay: delay } );
+                            ttoutSMART.arr.push( { label: label,  hnd: hnd,  hnd2: b,  delay: delay } );
                             break;
         } // switch
     
-        function showArrQvTyIk() {   for( let i in ttout.arr )  log(ttout.arr[i]);   console.log('---');    }
-        function delQvTyIk(ll)   {   let a=ttout.arr.findIndex( (el) => el.label == ll );
+        function showArrQvTyIk() {   for( let i in ttoutSMART.arr )  log(ttoutSMART.arr[i]);   console.log('---');    }
+        function delQvTyIk(ll)   {   let a=ttoutSMART.arr.findIndex( (el) => el.label == ll );
                                      // log(`${fn}: deleting ${ll} at ${a}`);
-                                     if(a>=0) {   clearTimeout(ttout.arr[a].hnd);
-                                                  clearTimeout(ttout.arr[a].hnd2);
-                                                  ttout.arr.splice(a, 1);           } // splice here deletes the element!!!
+                                     if(a>=0) {   clearTimeout(ttoutSMART.arr[a].hnd);
+                                                  clearTimeout(ttoutSMART.arr[a].hnd2);
+                                                  ttoutSMART.arr.splice(a, 1);           } // splice here deletes the element!!!
         }
     } // ttoutSMART()
-    var  tTS=ttoutSMART;
+    var  tTS        = ttoutSMART;
+    var  tmoutSMART = ttoutSMART;
 
 
+    function intervSMART (delay=1000, label, cmd='new', func) {  // wrap for setInterval()  // static массив всех вызванных таймеров с метками
+        // сделал del срабатывающий после delay
+        let a, b, hnd, min=10000, max=99999,   fn=fnName();
+        if ( typeof intervSMART.arr == 'undefined' ) {    intervSMART.arr = [];  if(dbg && dbg>5) log(`${fn}: static arr init`); }
+        if( ! isNumber(delay) ) {  console.error(`${fn}: delay is not a number: ${delay}`);   return;  }  // isNumeric:function(a){return!isNaN(parseFloat(a))&&isFinite(a)
+        switch (cmd) {
+            case 'chk':     case 'exists':      case 'exist':
+                            if(  a=intervSMART.arr.find( (el) => el.label == label )  )    return a;  // a.hnd
+                            else                                                    return false;
+                            break;
+            case 'list':    showArrQvTyIk();
+                            break;
+            case 'del':     // delete by label from array
+            case 'delete':	setTimeout(() => 	{ 	delQvTyIk(label,delay);	},delay);
+                            // delQvTyIk(label); // old way
+                            break;
+            default:        // create new or update existing
+            case 'new':
+            case 'set':     if( !label ) label=`lbl_${Math.floor(Math.random() * (max - min + 1)) + min}`;  // если label пуста, то сгенерировать случайную !!!
+                            delQvTyIk(label,0);  // ищет в массиве существующий таймер, делает ему clear и удаляет его из массива
+                            //log(`creating new: ${label}`);
+                            hnd=setInterval(() => { 		func();		}, delay);
+                            //b=setTimeout(()=>{  //log(`deleting on TIMEOUT ${label}`);
+                            //                    delQvTyIk(label);              		}, delay+3);  // по истечении таймера удалить его из массива !!!
+                            intervSMART.arr.push( { label: label,  hnd: hnd,  hnd2: b,  delay: delay } );
+                            log(`${fn}: set new intervSMART ${label} with delay ${delay}ms`);
+                            break;
+        } // switch
+    
+        function showArrQvTyIk()    {  for( let i in intervSMART.arr )  log(intervSMART.arr[i]);   console.log('---');    }
+        function delQvTyIk(ll,dd=0) {  let a=intervSMART.arr.findIndex( (el) => el.label == ll );
+                                       log(`${fn}: deleting now ${ll} after delay ${dd}ms expiration  at array #${a}`);
+                                       if(a>=0) {   clearInterval(intervSMART.arr[a].hnd);  // interval !!!
+                                                    clearTimeout(intervSMART.arr[a].hnd2);  // timeout !!! - no mistake here
+                                                    intervSMART.arr.splice(a, 1);           } // splice here deletes the element!!!
+        }
+    } // intervSMART()
+    var  intervalSMART = intervSMART;
 
+
+    const elementIsVisibleInViewport = (el, partiallyVisible = false) => {  // WORKS https://www.30secondsofcode.org/js/s/element-is-visible-in-viewport/
+        if (!el) return false;                                              // see also https://marco-prontera.medium.com/now-you-see-me-is-in-viewport-javascript-efa19b20b063
+        const { top, left, bottom, right } = el.getBoundingClientRect();    // https://stackoverflow.com/questions/123999/how-can-i-tell-if-a-dom-element-is-visible-in-the-current-viewport
+        const { innerHeight, innerWidth } = window;
+        return partiallyVisible
+          ? ((top > 0 && top < innerHeight) ||
+              (bottom > 0 && bottom < innerHeight)) &&
+              ((left > 0 && left < innerWidth) || (right > 0 && right < innerWidth))
+          : top >= 0 && left >= 0 && bottom <= innerHeight && right <= innerWidth;
+      };
+      // elementIsVisibleInViewport(el);            // false -(not fully visible)
+      // elementIsVisibleInViewport(el, true);      // true - (partially visible)
+
+
+    
     function showMSGsimple (msg, duration, hook, styl)  { 	// one line showmsg ()	// - hook in querySelector form, i.e. "#smth" or "div[id='smth']"
     //  looks GOOD and debugged
         let aa, mydiv, pareFou, fn=fnName();									// - if msg="" - then mydiv will be removed
@@ -94,19 +215,63 @@ var	err = console.error.bind(console),
     }  // end of showMSGsimple()
 
 
+
+    async function getNewFileHandle () {
+        const options = {
+          types: [
+            {
+              description: 'Text Files',
+              accept: {
+                'text/plain': ['.txt'],
+              },
+            },
+          ],
+        };
+        const handle = await self.showSaveFilePicker(options);
+        return handle;
+      } // getNewFileHandle()
+
+
 	async function mySaveAs (fname, url, opt1 )  {  // WORKS FINE  // usage: (async() => {	ww=await mySaveAs("filename", "http://abc", '');	})();
-		if(!opt1) opt1={ suggestedName: fname,  types: [      {	description: 'Images',		accept: {    'image/*': ['.png', '.gif', '.jpeg', '.jpg']      }	},    ],  };
-		if(dbg) log("mySaveAs(): " +fname, url, opt1, "---");
+        // в tampermonkey есть косяк https://github.com/Tampermonkey/tampermonkey/issues/1876
+        //      When grant is other than none, showSaveFilePicker() will report an 'Illegal invocation' error
+        if(!opt1) opt1={ suggestedName: fname,  types: [      {	description: 'Images',		accept: {    'image/*': ['.png', '.gif', '.jpeg', '.jpg', '.webp']      }	},    ],  };
+        if(dbg) log("mySaveAs(): " +fname, url, opt1, "---");
 		// если с opt1 что-то не то, window.showSaveFilePicker молча обламывается
 		var fhnd = await window.showSaveFilePicker(opt1);	if (!fhnd) 	{ 	log("mySaveAs(): showSaveFilePicker() failed"); return null; 	}
   		var wr = await fhnd.createWritable();  				if (!wr) 	{ 	log("mySaveAs(): createWritable() failed"); 	return null; 	} 	// Create a FileSystemWritableFileStream to write to.
   		var re = await fetch(url); 							if (!re) 	{ 	log("mySaveAs(): fetch()"); 					return null; 	} 	// Make an HTTP request for the contents.
   		await re.body.pipeTo(wr);																												// Stream the response into the file.   // pipeTo() closes the destination pipe by default, no need to close it.
-	}
+	} // mySaveAs()
+
+
+	async function mySaveAsExperim (fname, url, opt1 )  {  // WORKS FINE  // usage: (async() => {	ww=await mySaveAs("filename", "http://abc", '');	})();
+        // Feature detection. The API needs to be supported and the app not run in an iframe.
+        const supportsFileSystemAccess = 'showSaveFilePicker' in window && (() => {
+            try {
+                log(`return ${window.self === window.top}`);;
+            } catch {
+                log(`return false`);
+            }
+        })();
+
+        //if(!opt1) opt1={ suggestedName: fname,  types: [      {	description: 'Images',		accept: {    'image/*': ['.png', '.gif', '.jpeg', '.jpg', '.webp']      }	},    ],  };
+		if(!opt1) opt1={ suggestedName: fname,  types: [      {	description: 'Images',		accept: {    'image/*': ['.png', '.gif', '.jpeg', '.jpg', '.webp']      }	},    ],  };
+        //log("mySaveAs dbg=",dbg);
+        //if(dbg)
+             log("mySaveAs(): " +fname, url, opt1, "---");
+		// если с opt1 что-то не то, window.showSaveFilePicker молча обламывается
+		//var fhnd = await window.showSaveFilePicker(opt1);	if (!fhnd) 	{ 	log("mySaveAs(): showSaveFilePicker() failed"); return null; 	}
+		var fhnd = await window.showOpenFilePicker();	if (!fhnd) 	{ 	log("mySaveAs(): showSaveFilePicker() failed"); return null; 	}
+  		//var wr = await fhnd.createWritable();  				if (!wr) 	{ 	log("mySaveAs(): createWritable() failed"); 	return null; 	} 	// Create a FileSystemWritableFileStream to write to.
+  		//var re = await fetch(url); 							if (!re) 	{ 	log("mySaveAs(): fetch()"); 					return null; 	} 	// Make an HTTP request for the contents.
+  		//await re.body.pipeTo(wr);																												// Stream the response into the file.   // pipeTo() closes the destination pipe by default, no need to close it.
+	} // mySaveAsExperim()
+
 
 
 //console.log(DOMRegex(/^service\//)); // your regex here
-function DOMRegex(regex) {  // try as function and as prototype
+function DOMRegex (regex) {  // try as function and as prototype
     let output = [];
     for (let i of document.querySelectorAll('*')) {
         if (regex.test(i.type)) { // or whatever attribute you want to search
@@ -117,7 +282,7 @@ function DOMRegex(regex) {  // try as function and as prototype
 }
 
 //getAllTagMatches(/^di/i); // Returns an array of all elements that begin with "di", eg "div"
-function getAllTagMatches(regEx) {
+function getAllTagMatches (regEx) {
   return Array.prototype.slice.call(document.querySelectorAll('*')).filter(function (el) { 
     return el.tagName.match(regEx);
   });
@@ -152,16 +317,35 @@ function getAllTagMatches(regEx) {
 
 
 
-    function WLH () {    let aa=window.location.href;   if (aa.match(/accounts.youtube/))   return "accounts.yotube";
+    function WLH () {    let aa=window.location.href;   // return aa;
+                                                        if (aa.match(/accounts.youtube/))   return "accounts.yotube";
                                                         return aa.replace(/http.*\/\/(www.)*(.*)\?.*/g,'$2');
     }
 
     var       fnName  = getFunctionsNameThatCalledThisFunction;  // get name of currently executing function       //function           gFNTCTF() { return gFNTCTF.caller.name;  }
-    function            getFunctionsNameThatCalledThisFunction() { return getFunctionsNameThatCalledThisFunction.caller.name;  }
+    function            getFunctionsNameThatCalledThisFunction() {
+                                 return getFunctionsNameThatCalledThisFunction.caller?.name ? getFunctionsNameThatCalledThisFunction.caller?.name : "funcNameUnknown";   // глючит в строгом режиме !!!
+                                 // ??? return arguments.callee.caller ??;  // глючит в строгом режиме !!!
+                                 // лучше пользовать function doSomething() {  alert(doSomething.name);  }  https://stackoverflow.com/questions/2648293/how-to-get-the-function-name-from-within-that-function
+                        }  
 
     var log = console.log;
     //var originalLogger  = console.log;
-//    var log = function() { for (var i of arguments)   originalLogger(i);  }   // писать одним аргументом, чтобы вывод был в пределах одного сообщения в логе !!! \n отрабатыват отлично!  log("1\n2", "3");
+    //var log = function() { for (var i of arguments)   originalLogger(i);  }   // писать одним аргументом, чтобы вывод был в пределах одного сообщения в логе !!! \n отрабатыват отлично!  log("1\n2", "3");
+
+
+
+
+
+
+    var logdbg = console.debug;     // потом проверять if(dbg)
+    
+    // делать logdbg1, logdbg2 ... logdbgN  с разными уровнями отладки !!!    проверять, что переменная dbg определена !!!
+
+    var logerr = console.error;    var logwarn = console.warn;
+    var loginfo = console.info;    var loginf = console.info;
+
+    
 
     function sleepSYNC (millis)  {  // BLOCK execution of others threads!!!  ex.pausecomp
        // выполнять блоками по 100-200 мс, чтобы не ставила все раком
@@ -192,8 +376,8 @@ function getAllTagMatches(regEx) {
     });
     //mySleepExample();  // run step by step with delays // ВРОДЕ РАБОТАЕТ и НЕ жрет проц
 
-
-    function vsc_font(fntsz="") {  // change of Video Speed Controller (VSC) font size
+/* previous version
+    function vsc_font (fntsz="") {  // change of Video Speed Controller (VSC) font size
             //document.querySelector(".vsc-controller").shadowRoot.styleSheets[0].rules[0].styleSheet.cssRules[0].style.fontSize = '25px';
             let font1=document.querySelector(".vsc-controller");
             if (fntsz == "")     return font1?.shadowRoot?.styleSheets[0]?.rules[0]?.styleSheet?.cssRules[0]?.style?.fontSize;
@@ -205,6 +389,44 @@ function getAllTagMatches(regEx) {
             else console.error("vsc_font(): .vsc-controller....cssRules[0].style.fontSize is not found")
             return 0;
     }
+*/
+function vsc_font(fntsz="",visibility=0) {  // change of Video Speed Controller (VSC) font size
+    // console.log(`vsc_font() dbg: "${fntsz}" - "${visibility}"`);
+    let font1=document.querySelector(".vsc-controller");            if (!font1)  {      console.log("vsc_font(): failed to find .vsc-controller");  return 0; }   //document.querySelector(".vsc-controller").shadowRoot.styleSheets[0].rules[0].styleSheet.cssRules[0].style.fontSize = '25px';
+    let xx=font1.shadowRoot.querySelector("div#controller").style;  if (!xx)     {      console.log("vsc_font(): failed to find div#controller");   return 0; }
+    if (visibility) {   xx.zIndex=99; xx.opacity = 0.9;  console.log("vsc_font(): visible");  } // opacity works, but zIndex better !!!
+    else {              xx.zIndex=0;  xx.opacity = 0.1;  console.log("vsc_font(): hidden");   }
+    // убрал visibility, т.к. из-за этого очень тормозило получение скорости !!!               // лучше ставить opacity   забыть про visibility !!!
+    // else {              document.querySelector(".vsc-controller").shadowRoot.styleSheets[0].rules[0].styleSheet.cssRules[0].style.visibility = "hidden";   console.log(`debug: vsc font: ${document.querySelector(".vsc-controller").shadowRoot.querySelector("#controller > span.draggable")?.innerText}`);   }
+
+    if (fntsz == "")     return font1?.shadowRoot?.styleSheets[0]?.rules[0]?.styleSheet?.cssRules[0]?.style?.fontSize;  // debugged
+    // if (! fntsz)     return font1?.shadowRoot?.styleSheets[0]?.rules[0]?.styleSheet?.cssRules[0]?.style?.fontSize;   // 2debug <<<<<<<<<<
+
+    if (font1?.shadowRoot?.styleSheets[0]?.rules[0]?.styleSheet?.cssRules[0]?.style?.fontSize) {
+        font1.shadowRoot.styleSheets[0].rules[0].styleSheet.cssRules[0].style.fontSize = fntsz;
+        if (dbg) console.log("vsc_font(): change " + font1?.shadowRoot?.styleSheets[0]?.rules[0]?.styleSheet?.cssRules[0]?.style?.fontSize + " -> " +fntsz);
+        return fntsz;
+    }
+    else console.log("vsc_font(): .vsc-controller...cssRules[0].style.fontSize is not found");
+    return 0;
+}
+
+
+	function vsc_control (cmd="getspeed") {  // Video Speed Controller chrome extension
+		let bb, aa=document.querySelector(".vsc-controller");  //console.log(`debug: vsc speed ${dbg}: ${document.querySelector(".vsc-controller").shadowRoot.querySelector("#controller > span.draggable")?.innerText}`);
+		if (!aa)  {  if(dbg) console.log("vsc_control(): failed to find .vsc-controller");  return 0; }
+		switch (cmd) {
+             case "exist":      return 1
+             case "exists":     return 1
+             case "getspeed":   bb=aa.shadowRoot.querySelector("#controller > span.draggable")?.innerText;
+                                if(bb)   return bb;    else  return 0.001;
+                                break;
+             // later make setspeed !!!
+             default:           console.log("vsc_control(): unknown cmd=" + cmd);
+                                return 0;
+		}
+	} // vsc_control()
+
 
 
 //   fu nc tion waitElement(ele) {  // rc=1 - FOUND
@@ -213,7 +435,7 @@ function getAllTagMatches(regEx) {
     function qS  (query, elem=document) {     return elem.querySelector(query);		}  // WORKS
     //function qSA (que, elem=document) {     return elem.querySelectorALL(que); 	}  // FAILs если в que перечислены несколько критериев
 
-    function   queryElement(ele, doc=document) { // еще доделать, чтобы сначала искать указанный doc, а потом в нем искать ele
+    function   queryElement (ele, doc=document) { // еще доделать, чтобы сначала искать указанный doc, а потом в нем искать ele
                     let aaa=doс?.querySelector(ele);      if(dbg>5) log("getEl(): " + aaa);      return aaa;
     }
     //const      qS            = queryElement;
@@ -224,7 +446,7 @@ function getAllTagMatches(regEx) {
     const       queryEl       = queryElement; // !!! see also https://stackoverflow.com/questions/13383886/making-a-short-alias-for-document-queryselectorall
 
     function deleteElement (ele) {
-           let aaa=document.querySelector(ele);    if(aaa) aaa.remove();    if(dbg && dbg>=5) console.log("deleteElement(" +ele+ "): ", aaa);
+           let aaa=document.querySelector(ele);    if(aaa) aaa.remove();    if(dbg && dbg>=5)   console.log("deleteElement(" +ele+ "): ", aaa);
     }
 
 
@@ -329,8 +551,28 @@ function getAllTagMatches(regEx) {
         function queryL() {  return document.querySelector( `label[for=${staticLabel}]` ); }
     }   // end of staticL()
 
+    
+    /* function setHTMLvar (varName, varValue) {  var aa;     // как-то херово и НЕОПЕРАТИВНО работает
+        if( aa=qS(`head #${varName}`) ) {		aa.innerText=varValue;
+                                                return true;
+        } else { 								aa = document.createElement("div"); 	aa.id=varName;			aa.innerText=varValue;
+                                                return qS("head").appendChild(aa);
+        }
+    } // setHTMLvar()
+    var  sHv        = setHTMLvar;           */
+    
+    /*function getHTMLvar (varName) {  var aa, bb;    // как-то херово и НЕОПЕРАТИВНО работает
+        aa=qS(`head #${CSS.escape(varName)}`);
+        if(aa==null) return null;
+        bb=aa.innerText;
+        if( bb=="true" )    return true;
+        if( bb=="false" )   return false;
+        return bb;
+    } // getHTMLvar()
+    var  gHv        = getHTMLvar;           */
+    
 
-    function isNumber(n){
+    function isNumber (n){
         return Number(n)=== n;
         // see also function isNumber(val) {   return !isNaN(val);  }
         //   // https://stackoverflow.com/questions/18082/validate-decimal-numbers-in-javascript-isnumeric
@@ -359,3 +601,19 @@ function getAllTagMatches(regEx) {
                  }
              }
 	} // TrustedHTMLworkaround2()
+
+
+	function QWERTYlayoutFix (str, reverse) {  // qwerty -> йцукенг и наоборот  https://www.cyberforum.ru/javascript/thread2400986.html
+		var replace, replacer = {	"q": "й", "w": "ц", "e": "у", "r": "к", "t": "е", "y": "н", "u": "г",	"i": "ш", "o": "щ", "p": "з", "[": "х", "]": "ъ", "a": "ф", "s": "ы",	"d": "в", "f": "а", "g": "п", "h": "р", "j": "о", "k": "л", "l": "д",	";": "ж", "'": "э", "z": "я", "x": "ч", "c": "с", "v": "м", "b": "и",	"n": "т", "m": "ь", ",": "б", ".": "ю", "/": ".",  };
+		reverse && Object.keys(replacer).forEach(key => {		let v = replacer[key];     delete (replacer[key]); 	replacer[v] = key;		})
+		// console.log(replacer);
+		for (let i = 0; i < str.length; i++) {
+			if (replacer[str[i].toLowerCase()] != undefined) {			if (str[i] == str[i].toLowerCase()) {			replace = replacer[str[i].toLowerCase()]; 	}
+																		else if (str[i] == str[i].toUpperCase()) {		replace = replacer[str[i].toLowerCase()].toUpperCase();		}
+																		str = str.replace(str[i], replace);
+			}
+		}
+		return str;
+	} // QWERTYlayoutFix()
+        // console.log("::1::", layoutFix('ghbdtn'));      // -> привет
+	    // console.log("::2::", layoutFix('руддщ', true));  // -> hello
