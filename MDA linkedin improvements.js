@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         MDA linkedin improvements
 // @namespace    http://tampermonkey.net/
-// @version      1.5.7
+// @version      1.5.8
 // @description  my linkedin improvements started 2025-01-11
 // @author       mr-d-r
 // @license      MIT
@@ -10,7 +10,7 @@
 // @require      https://update.greasyfork.org/scripts/524553/1525219/MDA%20library.js
 // ==/UserScript==
 
-// update check 27.01.2025
+// updated 2026 apr
 
 (function() {
     'use strict';
@@ -74,8 +74,10 @@
 
 
 	window.addEventListener('load', function() {	var fn=fnName();
-		ttout(300,   ()=>{	myActions(`onLoad`);	});
-		ttout(2500,  ()=>{	myActions(`onLoad`);	});
+		ttout(100,   ()=>{	myActions(`onLoad`);	});
+		ttout(1000,  ()=>{	myActions(`onLoad`);	});
+		ttout(1600,  ()=>{	myActions(`onLoad`);	});
+		ttout(2800,  ()=>{	myActions(`onLoad`);	});
 
 		// ttout(onLOADlckTMOUT,  ()=>{ 	onLOADlck=false; 					});  	// 3000 ms IMPORTANT !!!
 	}); // window.addEventListener('load'...) // onload
@@ -92,7 +94,7 @@ window.addEventListener('keydown', (e) => {     // window.addEventListener("keyu
     switch (e.code) {  // see https://www.freecodecamp.org/news/javascript-keycode-list-keypress-event-key-codes/
     	 case "KeyA":
 				//log(`KeyA: clicked`);
-				myActions(`onKeyA`);  // chk upd 111 222 333 444 555
+				myActions(`onKeyA`);
 				e.preventDefault();
 				break;
     	 case "KeyE":  // Endorse
@@ -118,7 +120,7 @@ window.addEventListener('keydown', (e) => {     // window.addEventListener("keyu
     				if (a) b=a.innerText;
     				if (b)  console.log("bbb", b == "Show more feed updates");
   					if( b == "Show more feed updates") {
-        				console.log(a);  a.parentNode.click();		// WORKS, но орет Uncaught TypeError: Cannot read properties of null (reading 'parentNode') !!!
+        				console.log(a);  a?.parentNode?.click();		// WORKS, но орет Uncaught TypeError: Cannot read properties of null (reading 'parentNode') !!!
 					}
 				});
 				e.preventDefault();
@@ -159,7 +161,7 @@ window.addEventListener('scroll',function(e){  // !!! https://stackoverflow.com/
 
 }) // 'scroll'
 
-	function click_ShowMore () {
+	function click_ShowMore () {   var a;
 			if( a=qS(".jobs-description__footer-button[aria-expanded='false']") ) 	{ 	log(`${window.location.hostname} "See more" clicked`); 	a.click(); 	}
 			//else log(`${window.location.hostname} "See more" is not found`);
 
@@ -171,4 +173,3 @@ window.addEventListener('scroll',function(e){  // !!! https://stackoverflow.com/
 			});
 	} // click_ShowMore()
 })();
-
