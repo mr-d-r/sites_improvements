@@ -94,11 +94,12 @@ window.addEventListener('keydown', (e) => {     // window.addEventListener("keyu
     switch (e.code) {  // see https://www.freecodecamp.org/news/javascript-keycode-list-keypress-event-key-codes/
     	 case "KeyA":
 				//log(`KeyA: clicked`);
+				if (e.ctrlKey || e.altKey || e.shiftKey || event.metaKey)  break;
 				myActions(`onKeyA`);
 				e.preventDefault();
 				break;
     	 case "KeyE":  // Endorse
-				if (e.ctrlKey || e.altKey || e.shiftKey)  break;
+				if (e.ctrlKey || e.altKey || e.shiftKey || event.metaKey)  break;
 				aa=document.querySelectorAll(".artdeco-button__text").length;
 				cc=0; document.querySelectorAll(".artdeco-button__text").forEach(item => {
 					if(item.textContent.match(/Endorse\n/)) { console.log(item); 	cc++; 	item.click(); } ;
@@ -113,7 +114,7 @@ window.addEventListener('keydown', (e) => {     // window.addEventListener("keyu
 				e.preventDefault();
 				break;
     	 case "KeyM":  // чаще всего кнопка "Show more feed updates" показывается при запущенном devtool !!!
-				if (e.ctrlKey || e.altKey || e.shiftKey)  break;
+				if (e.ctrlKey || e.altKey || e.shiftKey || event.metaKey)  break;
 				log(`KeyM: "Show more feed updates"`);
 				document.querySelectorAll(".display-flex").forEach(item => {
   					a=item.querySelector(".artdeco-button__text");
@@ -173,3 +174,4 @@ window.addEventListener('scroll',function(e){  // !!! https://stackoverflow.com/
 			});
 	} // click_ShowMore()
 })();
+
