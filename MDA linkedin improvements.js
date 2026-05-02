@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         MDA linkedin improvements
 // @namespace    http://tampermonkey.net/
-// @version      1.5.9
+// @version      1.6.0
 // @description  my linkedin improvements started 2025-01-11
 // @author       mr-d-r
 // @license      MIT
@@ -10,7 +10,7 @@
 // @require      https://update.greasyfork.org/scripts/524553/1525219/MDA%20library.js
 // ==/UserScript==
 
-// updated 2026 apr
+// updated 2026 may
 
 (function() {
     'use strict';
@@ -94,12 +94,12 @@ window.addEventListener('keydown', (e) => {     // window.addEventListener("keyu
     switch (e.code) {  // see https://www.freecodecamp.org/news/javascript-keycode-list-keypress-event-key-codes/
     	 case "KeyA":
 				//log(`KeyA: clicked`);
-				if (e.ctrlKey || e.altKey || e.shiftKey || event.metaKey)  break;
+				if (e.ctrlKey || e.altKey || e.shiftKey || emetaKey)  break;
 				myActions(`onKeyA`);
 				e.preventDefault();
 				break;
     	 case "KeyE":  // Endorse
-				if (e.ctrlKey || e.altKey || e.shiftKey || event.metaKey)  break;
+				if (e.ctrlKey || e.altKey || e.shiftKey || e.metaKey)  break;
 				aa=document.querySelectorAll(".artdeco-button__text").length;
 				cc=0; document.querySelectorAll(".artdeco-button__text").forEach(item => {
 					if(item.textContent.match(/Endorse\n/)) { console.log(item); 	cc++; 	item.click(); } ;
@@ -114,7 +114,7 @@ window.addEventListener('keydown', (e) => {     // window.addEventListener("keyu
 				e.preventDefault();
 				break;
     	 case "KeyM":  // чаще всего кнопка "Show more feed updates" показывается при запущенном devtool !!!
-				if (e.ctrlKey || e.altKey || e.shiftKey || event.metaKey)  break;
+				if (e.ctrlKey || e.altKey || e.shiftKey || e.metaKey)  break;
 				log(`KeyM: "Show more feed updates"`);
 				document.querySelectorAll(".display-flex").forEach(item => {
   					a=item.querySelector(".artdeco-button__text");
