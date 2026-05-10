@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         MDA youtube SaveButt Datetime Jumps ADs
 // @namespace    http://tampermonkey.net/
-// @version      1.0.1
+// @version      1.0.2
 // @description  started 2024-11-26
 // @author       mr-d-r
 // @license      MIT
@@ -9,11 +9,11 @@
 // @include      http*://*.youtube.com/*
 // @exclude      http*://accounts.youtube.com/*
 // @exclude      http*://www.google.*/*
-// @grant        GM_addStyle
 // @icon         https://www.google.com/s2/favicons?sz=64&domain=youtube.com
-// @require      file://D:\Work\gdrive_obs\myJavascript\_MDAlib_tampermonkey.js
-// @require      file://D:\Work\gdrive_obs\myJavascript\_MDAlib_youtube_common.js
-// @require      file://D:\Work\gdrive_obs\myJavascript\_lib_dateFormat.js
+// @grant        GM_addStyle
+// @require      https://update.greasyfork.org/scripts/524553/1525219/MDA%20library.js
+// @require      https://github.com/mr-d-r/sites_improvements/blob/5499a45f16c1a114f5c81e4067cd0cdc514229c0/_lib_dateFormat.js
+// @require      https://github.com/mr-d-r/sites_improvements/blob/5499a45f16c1a114f5c81e4067cd0cdc514229c0/_MDAlib_youtube_common.js
 // ==/UserScript==
 
 // @i nclude      http*://*.youtube.com/*
