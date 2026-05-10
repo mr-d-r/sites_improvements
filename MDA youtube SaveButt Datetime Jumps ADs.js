@@ -12,8 +12,8 @@
 // @icon         https://www.google.com/s2/favicons?sz=64&domain=youtube.com
 // @grant        GM_addStyle
 // @require      https://update.greasyfork.org/scripts/524553/1525219/MDA%20library.js
-// @require      https://github.com/mr-d-r/sites_improvements/blob/5499a45f16c1a114f5c81e4067cd0cdc514229c0/_lib_dateFormat.js
-// @require      https://github.com/mr-d-r/sites_improvements/blob/5499a45f16c1a114f5c81e4067cd0cdc514229c0/_MDAlib_youtube_common.js
+// @require      https://update.greasyfork.org/scripts/577495/1821180/Date%20Format%20123.js
+// @require      https://update.greasyfork.org/scripts/577494/1821178/MDA%20youtube%20common.js
 // ==/UserScript==
 
 // @i nclude      http*://*.youtube.com/*
