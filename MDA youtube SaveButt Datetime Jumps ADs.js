@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         MDA youtube SaveButt Datetime Jumps ADs
 // @namespace    http://tampermonkey.net/
-// @version      1.0.2
+// @version      1.0.4
 // @description  started 2024-11-26
 // @author       mr-d-r
 // @license      MIT
