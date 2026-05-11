@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         MDA youtube playlists
 // @namespace    http://tampermonkey.net/
-// @version      1.0.4
+// @version      2026.5.11
 // @description  started 2024-11-26
 // @author       mr-d-r
 // @license      MIT
@@ -11,7 +11,7 @@
 // @exclude      http*://www.google.*/*
 // @icon         https://www.google.com/s2/favicons?sz=64&domain=youtube.com
 // @grant        GM_addStyle
-// @require      https://update.greasyfork.org/scripts/524553/1525219/MDA%20library.js
+// @require      https://update.greasyfork.org/scripts/524553/1821889/MDA%20library.js
 // @require      https://update.greasyfork.org/scripts/577495/1821180/Date%20Format%20123.js
 // @require      https://update.greasyfork.org/scripts/577494/1821178/MDA%20youtube%20common.js
 // ==/UserScript==
