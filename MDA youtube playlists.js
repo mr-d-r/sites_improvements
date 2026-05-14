@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         MDA youtube playlists
 // @namespace    http://tampermonkey.net/
-// @version      2026.5.11.a
+// @version      2026.5.15.b
 // @description  started 2024-11-26
 // @author       mr-d-r
 // @license      MIT
@@ -21,6 +21,26 @@
 // !!! супер полезно Improved youtube - bnomihfieiccainjcjblhegjgglakjdd\4.1350_0\js&css\web-accessible\www.youtube.com\playlist-complete-playlist.js
 // 	можно пользоваться всеми функциями напрямую - ImprovedTube.playlistAttachQuickButtons()
 // 	getPlaylistId, playlist_id    ytd-playlist   YouTube's edit_playlist API
+
+
+
+
+
+// не работает без MDA youtube SaveButt Datetime Jumps ADs DEVEL !!!
+
+// упорядочивать код !!!!!!!!!
+
+// когда save диалог document.querySelector("tp-yt-iron-dropdown yt-list-view-model.ytListViewModelHost[role='list']")
+// 						открыт, то он tp-yt-iron-dropdown focused
+// 						закрыт, то aria-hidden=true
+
+// ставить флажок автонажатия save в виде тега в html c таймстемпом и названием скрипта, который выставил этот флажок
+
+// сделать отдельную версию через MUTATION !!!!!!!!!!!!!!! если не получится, то при клике запоминать текущее состояние, а потом ловить его изменение и стопить процесс
+// 		см. Youtube Save to... playlist incremental search.user.js !!!!!!!!!!!
+
+
+
 
 
 
@@ -137,9 +157,10 @@ var scrpt="MDA playlists";
 	// start of the script - MUST BE AT THE VERY BEGIN - right below 'use strict'; !!!   иначе у гугла выполняется 3 раза несмотря на if( wlh.match(/accounts.google.com/) ) 	{  return; } !!!
 	var dbg=0, wlh=WLH();
 	var scrpt="MDA playlists";
-	var t_id="mdaAJRTE", isSaveButtonClicked=false, SaveButtonMUTEX=false;
+	var t_id="mdaAJRTE", isSaveButtonClicked=false, SaveButtonMUTEX=false, userKeyS_press=false;
 
-	console.log("\n", "\n", `${GM.info.script.name}: start -> ${wlh}  debug=${(typeof dbg == "undefined") ? "absent" : dbg}  MDAlib=${(typeof MDAlib == "undefined") ? "absent" : MDAlib}` );
+//	console.log("\n", "\n", `${GM.info.script.name}: start -> ${wlh}  debug=${(typeof dbg == "undefined") ? "absent" : dbg}  MDAlib=${(typeof MDAlib == "undefined") ? "absent" : MDAlib}` );
+	console.log("\n", "\n", `${GM.info.script.name}` );
 	if (window.location.href.match("accounts.youtube"))  {  console.log("accounts.youtube is detected, exiting this instance...");      return null;  }
 		// else console.log("normal youtube is detected");
 
@@ -302,8 +323,7 @@ function crTable () { var pEl, htm, a, b, t, anch;
 //	 a=qS("#mdaDateTimeSavelist_tbl");
 	a=qS("#mdaSavelist_tbl");
 //	if (!a) { 	b=pEl.appendChild( fromHTML123(mdaSavelistTBL) );				log("2745632 NEW TABLE --- ", b); 	}
-	if (!a) { 	pEl.insertAdjacentHTML('afterbegin', mdaSavelistTBL); 	}
-
+	if (!a) { 	b=pEl.insertAdjacentHTML('afterbegin', mdaSavelistTBL); 	};  //logwarn("2745632 NEW TABLE --- ", b); 	}
 
 	if( t=qS(`#${t_id}_dummy12133`) )  {  log("--- already created", t);  return;  }
 
@@ -324,8 +344,8 @@ function crTable () { var pEl, htm, a, b, t, anch;
 				<td style="${st}" id="${t_id}_котики" 	  title="Котики"> 				&nbsp;&#x1F639;&#x1F408;		</td>
 				<td style="${st}" id="${t_id}_кулинария"  title="Кулинария"> 			&nbsp;&#x1F37D;&nbsp;cook&nbsp;&#x1F355;		</td>
 
-				<td style="${st}" id="${t_id}_films" 	  title="Фильмы"> 				&nbsp;&#x1F39E;		</td>
-				<td style="${st}" id="${t_id}_музыка" 	  title="Музыка"> 				&nbsp;&#x1F39D;		</td>
+				<td style="${st}" id="${t_id}_films" 	  title="Фильмы"> 				&nbsp;&nbsp;&#x1F39E;&nbsp;		</td>
+				<td style="${st}" id="${t_id}_музыка" 	  title="Музыка"> 				&nbsp;&nbsp;&#x1F39D;&nbsp;		</td>
 				<td style="${st}" id="${t_id}_аудиокниги" title="Аудиокниги"> 			&nbsp;&#x1F509;&nbsp;&#x1F56E;	</td>
 				<td style="${st}" id="${t_id}_lifehacks"  title="Лайфхаки">				&nbsp;&#x1F6E0;&nbsp;&#x2699;		</td>
 				<td style="${st}" id="${t_id}_здоровье"   title="Здоровье"> 			&nbsp;&#x2695;&nbsp;&#x1F48A;		</td>
@@ -372,9 +392,17 @@ function crTable () { var pEl, htm, a, b, t, anch;
 function mkCheckedBold (caller) {  var pEl, a, b, t, anch, ab, accum='',  fn="mkCheckedBold():";
 	if( ! wlh.match("youtube.*\/watch") )   {  loginfo(`${fn} URL is not /watch/ - exiting...`); 	return; }
 
-	hide_Save2playlistDialog(true);			clickSaveButton();    // hide then click
+	if( !userKeyS_press )	hide_Save2playlistDialog(true);	// hide...
+	clickSaveButton();    			// ... then click
+
+
+ttout(700,  ()=>{ // EXPERIMENTAL ttout !!!!!!!!!!!!!!
 	logwarn(`${fn} 48fg45: ${caller} `);
-	a=qS("#mdaDateTimeSavelist_tbl");
+	// a=qS("#mdaDateTimeSavelist_tbl");
+	a=qS("#mdaSavelist_tbl");
+
+	save2playlistResize();  // костыль, надо потом разобраться, почему НЕ работает при инициализации и убрать отсюда !!!
+
 	if (!a) { 	log("23434632 mkCheckedBold()  no table", b); 	return; 	}
 	ab=qSA("tp-yt-iron-dropdown  .ytContextualSheetLayoutContentContainer .ytListViewModelHost[role='list'] .ytListItemViewModelHost");
 	//logwarn(`chkbold: found: ${ab.length} >>> ${ab}`);
@@ -388,14 +416,19 @@ function mkCheckedBold (caller) {  var pEl, a, b, t, anch, ab, accum='',  fn="mk
 							let rege = new RegExp(`^${a},`, 'gi');      		// от начала строки до запятой !!!
 							if( it.getAttribute("aria-label").match(rege) ) {	// было it.getAttribute("aria-label").match(а) но это кривова-то
 								b=it?.getAttribute("aria-pressed"); 	//logwarn(`chkbold: ${a} ${b}`);
-								if( b=='true' ) 	el.style.fontWeight="bold",  	el.style.fontColor="red", accum=accum +" " +a, 	el.style.backgroundColor='cyan';   // 2 debug more
-								else 				el.style.fontWeight="normal",  	el.style.fontColor="blue", 						el.style.backgroundColor='white';  // try gray background !!!!
+								if( b=='true' ) {	intervSMART(0, 'plum1', 'del', null );	intervSMART(0, 'plum2', 'del', null );
+													el.style.fontWeight="bold",  	el.style.fontColor="red", accum=accum +" " +a, 	el.style.backgroundColor='cyan';   // 2 debug more
+												}
+								else 			{	intervSMART(0, 'plum1', 'del', null );	intervSMART(0, 'plum2', 'del', null );
+													el.style.fontWeight="normal",  	el.style.fontColor="blue", 						el.style.backgroundColor='white';  // try gray background !!!!
+												}
 					// может стоит добавлять '>' к названию плейлиста ?!?!
 							}
 		});
 	});
 	//if(accum) showmsg_mdaDateTime_inf1(`found in ${accum}`, 3000);
-	ttout(1000, ()=> {  closeSaveButton();  	hide_Save2playlistDialog(false);  });
+	ttout(500, ()=> {  closeSaveButton();  		hide_Save2playlistDialog(false);  });
+}); // ttout(700,  ()=>{
 
 	/* pre-2025 way:
 	qSA(`[id^=${t_id}_]`)?.forEach(el=>{   a=el.id.replace(`${t_id}_`,'');	// log("el: ", a);
@@ -412,6 +445,8 @@ function clickSaveButton () {  var aa, bb;
 
 	// ждать пока сделается drag ?
 
+	if(userKeyS_press) 	return;
+
 	if( aa=qS("#mdaSave") ) {  // нашли кнопку там, куда я ее перетащил
 		///////////////if(ytSavePlaylistButtonAlreadyPressed) { logdbg(`clickSaveButton():  SavePlaylistButtonAlreadyPressed=true` );  return; }
 		// hide_Save2playlistDialog(true);
@@ -421,20 +456,22 @@ function clickSaveButton () {  var aa, bb;
 		// после клика ждать пока не появится в DOM
 		// зарядить несколько ttout c проверкой, что появилась в DOM
 
-		ttout(3000, ()=>{  	// hide_Save2playlistDialog(false);
-							ttout(1000, ()=> { save2playlistResize(); });
-		});  // make savelist visible again
+		//ttout(3000, ()=>{  	// hide_Save2playlistDialog(false);
+		//					ttout(1000, ()=> { save2playlistResize(); });
+		//});  // make savelist visible again
 	}
 } // clickSaveButton()
 
 
 
 function closeSaveButton () {  var aa;
+	if(userKeyS_press) 	return;
 	// ДООТЛАЖИВАТЬ !!!
 		//log("closeSaveButton() obsoleted. return");
 	//return;
 		//clickSaveButton(); // to close
 		cl1212();
+		isSaveButtonClicked=false;
 		ttout(500,  ()=>{	cl1212(); 	log("savebutton closed 1");	});
 		ttout(1000,  ()=>{	cl1212();; 	log("savebutton closed 2");	});
 	function cl1212 () {   document.querySelector("#mdaSave")?.dispatchEvent( new KeyboardEvent("keydown", { key: "Escape" }) );		}
@@ -456,11 +493,13 @@ function save2playlist (plname) { var aa, ab, bb,  tto=300;
 						// fails to set custom attribute el.setAttribute("mda_plName", plname);
 						el.click();
 						ccc=CSS.escape(`mdaAJRTE_${plname}`);
-						if( aa=qS(`#mdaSavelist_tbl #${ccc}`) )  aa.style.backgroundColor="plum"; // tmp paint in some tmp color to show the button clicked
-
-						ttout(2000,  ()=>{  clickSaveButton();	mkCheckedBold("save2playlist(): try1 2sec");  });
-						ttout(4000,  ()=>{  clickSaveButton();	mkCheckedBold("save2playlist(): try2 4sec");  });
-						ttout(7000,  ()=>{  clickSaveButton();	mkCheckedBold("save2playlist(): try3 7sec");  });
+						if( aa=qS(`#mdaSavelist_tbl #${ccc}`) ) {  	aa.style.backgroundColor="plum"; // tmp paint in some tmp color to show the button clicked
+																	intervSMART(600,  'plum1', 'set', ()=>{  aa.style.backgroundColor="white";	});
+																	intervSMART(1200, 'plum2', 'set', ()=>{  aa.style.backgroundColor="plum";	});
+																}
+						ttout(2000,  ()=>{  mkCheckedBold("save2playlist(): try1 2sec");  });
+						ttout(4000,  ()=>{  mkCheckedBold("save2playlist(): try2 4sec");  });
+						ttout(7000,  ()=>{  mkCheckedBold("save2playlist(): try3 7sec");  });
 						//}
 				}  //else { 		log(`--1else ${plname} found`, "\nchcked: ", el.parentNode.parentNode.parentNode.parentNode.ariaChecked);  }
 			});
@@ -472,8 +511,8 @@ function save2playlist (plname) { var aa, ab, bb,  tto=300;
 			// document.querySelector("tp-yt-iron-dropdown .ytContextualSheetLayoutContentContainer  [aria-label^='films,']")?.getAttribute("aria-pressed")
 			// НО эта гребаная блядота не обновляет флаг сразу при нажатии на пункт, т.е. надо переоткрывать меню save to playlist повторно !!!
 
-			closeSaveButton();
-			hide_Save2playlistDialog(false);
+			//closeSaveButton();
+			//hide_Save2playlistDialog(false);
 	});
 } // save2playlist()
 
@@ -484,8 +523,14 @@ document.addEventListener("keydown", (e) => {
 		if( anyActiveInput() ) 	return; 					//if ((aaBB = document.activeElement) && (editable(a) || (a.tagName === "INPUT") || (a.tagName === "TEXTAREA"))) return;
 
 		switch (e.code) {
-	        // case "KeyS": // keyS тут не срабатывает, т.к. скорее всего рубится в другом скрипте
-	        case "KeyD":
+	        case "KeyS":
+				if (event.shiftKey  ||  event.ctrlKey  ||  event.altKey  ||  event.metaKey)  break;
+				userKeyS_press=true;
+				ttout(2000, ()=>{  userKeyS_press=false;  });
+				// no need  e.preventDefault();
+	            break;
+
+			case "KeyD":
 				// no need to run mkCheckedBold() for  case "KeyV":    case "ArrowLeft":       case "ArrowRight":
 				if (event.shiftKey  ||  event.ctrlKey  ||  event.altKey  ||  event.metaKey)  break;
 				mkCheckedBold(`keydown ${e.code} :37fh4742s:`);
@@ -499,7 +544,7 @@ document.addEventListener("keydown", (e) => {
 
 	window.addEventListener('load', function() { var aa;
 		console.log(`${GM.info.script.name} ===> on load event`);
-		TrustedHTMLworkaround2();
+		TrustedHTMLworkaround2();  	//TrustedHTMLworkaround();
 
 		//func1(sc, "immed");
 		//func2(sc, "immed");
@@ -508,9 +553,9 @@ document.addEventListener("keydown", (e) => {
 
 	//ttout(1000,  ()=>{
 								if( wlh.match("youtube.*\/watch") || wlh.match("youtube.*\/shorts") )   {
-									log("ThreeDotsMenuClick to test only - remove later");
-									ThreeDotsMenuClick();
-									Save2playlistClick();  // глюк - пропадает полоса с названием-лайками-дизлайками
+									//log("ThreeDotsMenuClick to test only - remove later");
+									//ThreeDotsMenuClick();
+									//Save2playlistClick();  // глюк - пропадает полоса с названием-лайками-дизлайками
 								}
     //});
 
@@ -534,7 +579,7 @@ document.addEventListener("keydown", (e) => {
 
 
 document.addEventListener("visibilitychange", (event) => {
-    if (document.visibilityState == "visible") {        mkCheckedBold("aasdqqwwe11753 onVisibilitychange");  log("aasdqqwwe11753");      crTable();
+    if (document.visibilityState == "visible") {        mkCheckedBold("aasdqqwwe11753 onVisibilitychange"); 	crTable();
     } //else {									        console.log("tab is inactive");    }
 });
 
