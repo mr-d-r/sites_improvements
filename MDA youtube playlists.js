@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         MDA youtube playlists
 // @namespace    http://tampermonkey.net/
-// @version      2026.5.15.dd
+// @version      2026.5.15.ee
 // @description  started 2024-11-26
 // @author       mr-d-r
 // @license      MIT
@@ -239,7 +239,7 @@ function closeChaptersInFullscreen () { var aa
 
 window.matchMedia('(display-mode: fullscreen)').addListener(({ matches }) => {  var aa;
     if (matches) {
-        log("fullscreen !!!  ", document.fullscreenElement=true); // Apply fullscreenmode mode related changes
+        log(">fullscreen !!!  ", document.fullscreenElement=true); // Apply fullscreenmode mode related changes
 		closeChaptersInFullscreen();
 		ttout(100,  ()=>{ closeChaptersInFullscreen() });
 		ttout(300,  ()=>{ closeChaptersInFullscreen() });
