@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         MDA youtube SaveButt Datetime Jumps ADs
 // @namespace    http://tampermonkey.net/
-// @version      1.0.6
+// @version      1.0.7
 // @description  started 2024-11-26
 // @author       mr-d-r
 // @license      MIT
@@ -19,6 +19,7 @@
 // @i nclude      http*://*.youtube.com/*
 // @in clude      http*://*.youtube.com/*  	// НЕ ТРОГАТЬ !!! иначе вообще не запускается !!!
 // @m atch        http*://*.youtube.com/*  	// НЕ ТРОГАТЬ !!! иначе не находит методов YT плеера !!!
+
 
 
 //
@@ -170,7 +171,7 @@ if( location.href.match(/www.youtube.com\/embed\/\?enablejsapi/) )  {  console.l
 			if (a) 	{ 	mouseMove(a); 				//a.classList.remove('ytp-autohide');
 						setTimeout(function () {	mouseMove(a); 	}, 300); // 500
 					}
-			//let b=qS("#ytd-player"); 	if( b ) 	b.wakeUpControls();  // не находит - рыть еще
+			//let b=qS("#ytd-player"); 	if(b) 	b.wakeUpControls();  // не находит - рыть еще
 			function mouseMove (ytp) { ytp.dispatchEvent(new Event("mousemove")); 	ytp.dispatchEvent(new Event("mouseup"));	ytp.dispatchEvent(new Event("mouseover"))}
         }
 
@@ -184,7 +185,8 @@ if( location.href.match(/www.youtube.com\/embed\/\?enablejsapi/) )  {  console.l
 
 		//log("showRealRemainTime " + caller,a,b);
 // 2del	spd=vsc_control("getspeed","showRealRemainTime()");		    	if( !spd ) 	spd=qS('.html5-main-video')?.playbackRate;        // 2debug: if( !isNumber(spd) )  spd=1;
-		spd=vsc_control("getspeed");		   						 	if( !spd ) 	spd=qS('.html5-main-video')?.playbackRate;        // 2debug: if( !isNumber(spd) )  spd=1;
+//		spd=vsc_control("getspeed");		   						 	if( !spd ) 	spd=qS('.html5-main-video')?.playbackRate;        // 2debug: if( !isNumber(spd) )  spd=1;
+		spd=getSpeed();
 		if( !a || !b || !spd ) return;
         if( ! a?.innerText ) return;
 		secC=hmsToSec( a?.innerText ) *1000;							tC=new Date(secC).toISOString().substr(11, 8);
@@ -194,16 +196,19 @@ if( location.href.match(/www.youtube.com\/embed\/\?enablejsapi/) )  {  console.l
         secRemDivSpeed=(secT-secC)/spd; 								tRDS=	new Date(secRemDivSpeed).toISOString().substr(11, 8).replace(/^00:/g, '');
         if( secRem==secRemDivSpeed ) RUNMAN='&#x3000;-';  // no acceleration
 
-		if(navigator.userAgentData.mobile) 		b.innerHTML=`${new Date(secT).toISOString().substr(11, 8).replace(/^00:/g, '')}`;  					// - ${spd}x)`; 	// без скобок
-		else 									b.innerHTML=`${new Date(secT).toISOString().substr(11, 8).replace(/^00:/g, '')} ${RUNMAN}${tRDS}`;  // - ${spd}x)`; 	// без скобок
+
+		var isMobile=false;  // navigator.userAgentData.mobile  // в firefox navigator.userAgentData НЕ РАБОТАЕТ - искать замену !!!
+
+		if(isMobile) 		b.innerHTML=`${new Date(secT).toISOString().substr(11, 8).replace(/^00:/g, '')}`;  					// - ${spd}x)`; 	// без скобок
+		else 				b.innerHTML=`${new Date(secT).toISOString().substr(11, 8).replace(/^00:/g, '')} ${RUNMAN}${tRDS}`;  // - ${spd}x)`; 	// без скобок
 		//log("showRealRemainTime " +caller + "DONE");
 
 		//b.innerHTML=`${new Date(secT).toISOString().substr(11, 8).replace(/^00:/g, '')} (${RUNMAN}${tRDS})`;   // - ${spd}x)`;     // в скобках
 
 		if( mda_overl=qS("#mda_overl") ) {
-			a=selectQuality("get");				b=spd; // getSpeed();
-			if(navigator.userAgentData.mobile) 	mda_overl.innerHTML=`&#x3000;&#x1F5B5; ${a} &#x3000;${b}x ${RUNMAN}${tRDS}`;	// shows quality, speed, remaining time
-			else 								mda_overl.innerHTML=`&#x3000;&#x1F5B5; ${a} &#x3000;${b}x`;  					// shows only quality and speed
+			a=selectQuality("get");		b=spd; // getSpeed();
+			if(isMobile)			 	mda_overl.innerHTML=`&#x3000;&#x1F5B5; ${a} &#x3000;${b}x ${RUNMAN}${tRDS}`;	// shows quality, speed, remaining time
+			else 						mda_overl.innerHTML=`&#x3000;&#x1F5B5; ${a} &#x3000;${b}x`;  					// shows only quality and speed
 		}
 
 	} // showRealRemainTime()
@@ -1016,7 +1021,7 @@ aa.addEventListener('YouTubePlayerAPIReady', (event) => {   onSSS("1YouTubePlaye
 
 function mda_showRemain_overlay () { 	var aa, bb;  // показывает качество и скорость видео и оставшееся время видео во всплывающем блоке выше ползунка !!!!!!!!!!!
 	if( aa=qS(".ytp-progress-bar-container") ) {
-		if( ! qS("#mda_overl") )	aa.insertAdjacentElement("beforebegin", fromHTML123(`<div id=mda_overl> --- </div>`) );
+		if( ! qS("#mda_overl") )	aa.insertAdjacentElement("beforebegin", fromHTML123(`<div id=mda_overl> --- </div>`) ),  logwarn("mda_overl is inserted !!!");
 	}
 	if( aa=qS("#mda_overl") ) 	{ 	aa.style.background = 'black';		aa.style.fontSize="13px";	aa.style.opacity="0.5";
 									if( bb=qS(".ytp-time-display") ) 		bb.style.paddingTop='1px'; 	// чуть поднимаем вверх элементы 1/5
@@ -1048,7 +1053,7 @@ window.addEventListener('load', function() { var aa, bb;  // onload
 		ttout(1200, ()=>{ func2(sc, "1200 ms delay"); });
 
 
-	TrustedHTMLworkaround2();  	//TrustedHTMLworkaround();
+	TrustedHTMLworkaround2();  	// TrustedHTMLworkaround();
 	//document.body.style.visibility='hidden';
 
 
@@ -1135,6 +1140,7 @@ window.addEventListener('mousemove', e => {
 										//if (dbg)
 										log("mousemove: finally fire");	clearInterval(tickPROC1);	tickPROC1=null;
 										showRealRemainTime();  // immediately
+										mda_showRemain_overlay(); // временно воткнул, проверить какая будет нагрузка на cpu !!!
 										for(let i=1;i<=25;i++) {		ttout(i*400, ()=>{  		showRealRemainTime(); 		});			} 	// five iterations
 									}
 						}, 400);
