@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         MDA youtube SaveButt Datetime Jumps ADs
 // @namespace    http://tampermonkey.net/
-// @version      1.0.5
+// @version      1.0.6
 // @description  started 2024-11-26
 // @author       mr-d-r
 // @license      MIT
@@ -170,7 +170,7 @@ if( location.href.match(/www.youtube.com\/embed\/\?enablejsapi/) )  {  console.l
 			if (a) 	{ 	mouseMove(a); 				//a.classList.remove('ytp-autohide');
 						setTimeout(function () {	mouseMove(a); 	}, 300); // 500
 					}
-			//let b=qS("#ytd-player"); 	if(b) 	b.wakeUpControls();  // не находит - рыть еще
+			//let b=qS("#ytd-player"); 	if( b ) 	b.wakeUpControls();  // не находит - рыть еще
 			function mouseMove (ytp) { ytp.dispatchEvent(new Event("mousemove")); 	ytp.dispatchEvent(new Event("mouseup"));	ytp.dispatchEvent(new Event("mouseover"))}
         }
 
