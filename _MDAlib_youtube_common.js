@@ -1,3 +1,11 @@
+// ==UserScript==
+// @name         MDA youtube common
+// @namespace    http://tampermonkey.net/
+// @version      1.0.3
+// @description  my JS YT library GITHUB
+// @author       mr-d-r
+// ==/UserScript==
+
 // @r equire  file://D:\...\_MDAlib_tampermonkey.js ВСЕГДА добавляет в самое начало скрипта, где он использован
 // т.о. переменные объявленные здесь всегда глобальные !!!
 var MDAytlib="included";  // real global vars !!!  // dbg - отладка    // verb - немного расширенные сообщения
@@ -132,20 +140,43 @@ function save2playlist_cosmetic () { // pre-2025 old save2playlist dialogue
 } // save2playlist_cosmetic()
 
 
-function save2playlistResize () {  var aa;  // 2025 new save2playlist dialogue
-	if( aa=document.querySelectorAll("ytd-popup-container.style-scope.ytd-app tp-yt-iron-dropdown.style-scope.ytd-popup-container") ) {
+function save2playlistResize () {  var aa, bb, cc;  // 2025 new save2playlist dialogue
+	aa=document.querySelectorAll("ytd-popup-container.style-scope.ytd-app tp-yt-iron-dropdown.style-scope.ytd-popup-container");
+	// еще вариант прямой - "tp-yt-iron-dropdown yt-list-view-model.ytListViewModelHost[role='list']
+	if( aa ) {
 		if( typeof aa[1] !='undefined' ) {
-			//log(`---- --- --- save2playlistResize():`, aa, aa[1]);
+			logwarn(`---- --- --- save2playlistResize():`, aa, aa[1]);
+			if( aa[1].getAttribute("save2playlistResize")=="DONE" )  return;
+
 			if( typeof aa[1].style != 'undefined' )  aa[1].style.height="800px";
 			aa[1].querySelector("#contentWrapper").style.height="800px";
 			aa[1].querySelector("yt-sheet-view-model").style.height="800px";
 			aa[1].querySelector("yt-sheet-view-model").style.maxHeight="700px";
-			aa[1].querySelectorAll("ytContextualSheetLayoutContentContainer toggleable-list-item-view-model")[1]
+			aa[1].setAttribute("save2playlistResize","DONE");
+			//aa[1].querySelectorAll("ytContextualSheetLayoutContentContainer toggleable-list-item-view-model")[1]
 
 			aa[1].querySelectorAll("toggleable-list-item-view-model")?.forEach((it) => {
-						it.querySelector(".yt-list-item-view-model__image-container.yt-list-item-view-model__leading")?.remove(); // icons
-						it.querySelector("span.yt-core-attributed-string.yt-list-item-view-model__subtitle.yt-core-attributed-string--white-space-pre-wrap")?.remove(); // share type
-			});
+						//it.querySelector(".yt-list-item-view-model__image-container.yt-list-item-view-model__leading")?.remove(); // icons OLD way
+						it.querySelector(".ytListItemViewModelImageContainer.ytListItemViewModelLeading")?.remove(); // icons
+						//it.querySelector("span.yt-core-attributed-string.yt-list-item-view-model__subtitle.yt-core-attributed-string--white-space-pre-wrap")?.remove(); // share type OLD way
+						it.querySelector(".ytListItemViewModelSubtitleContainer")?.remove(); // share type
+
+						it.querySelector(".ytListItemViewModelMainContainer").style.height='18px';
+						it.querySelector(".ytListItemViewModelTextWrapper").style.minHeight='11px';
+						if( bb=it.querySelector(".ytListItemViewModelTextWrapper .ytListItemViewModelTitle") ) {  // название плейлиста
+							bb.style.maxHeight='18px'; // высота текста
+							bb.style.fontSize='12px'; // размер шрифта
+						}
+						it.querySelector(".ytListItemViewModelImageContainer").style.height='20px'; // но лучше играться со стилем .ytListItemViewModelImageContainer
+						if( bb=it.querySelector(".ytListItemViewModelImage") ) {  // флажок
+							bb.style.height='13px';
+							bb.style.maxHeight='18px';
+						}
+						if( bb=it.querySelector(".ytListItemViewModelLayoutWrapper") ) {  // padding всей ячейки
+							bb.style.paddingTop='1px';
+							bb.style.paddingBottom='1px';
+						}
+		});
 
 			//aa.querySelectorAll("toggleable-list-item-view-model")[1].querySelector(".yt-list-item-view-model__image-container.yt-list-item-view-model__leading").remove()
 			//aa.querySelectorAll("toggleable-list-item-view-model")[2].querySelector(".yt-list-item-view-model__image-container.yt-list-item-view-model__leading").remove()
