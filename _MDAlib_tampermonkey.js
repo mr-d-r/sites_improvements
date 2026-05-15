@@ -1,9 +1,12 @@
 // @name         MDA library
 // @namespace    http://tampermonkey.net/
-// @version      2026.5.15
+// @version      2026.5.15bb
 // @description  my JS library GITHUB
 // @author       mr-d-r
 // ==/UserScript==
+
+
+
 
 
 //      выложил на github mr-d-r
@@ -164,8 +167,6 @@ function fromHTML123 (html, trim = true) {
                             delQvTyIk(label,0);  // ищет в массиве существующий таймер, делает ему clear и удаляет его из массива
                             //log(`creating new: ${label}`);
                             hnd=setInterval(() => { 		func();		}, delay);
-                            //b=setTimeout(()=>{  //log(`deleting on TIMEOUT ${label}`);
-                            //                    delQvTyIk(label);              		}, delay+3);  // по истечении таймера удалить его из массива !!!
                             intervSMART.arr.push( { label: label,  hnd: hnd,  hnd2: b,  delay: delay } );
                             log(`${fn}: set new intervSMART ${label} with delay ${delay}ms`);
                             break;
@@ -173,7 +174,7 @@ function fromHTML123 (html, trim = true) {
     
         function showArrQvTyIk()    {  for( let i in intervSMART.arr )  log(intervSMART.arr[i]);   console.log('---');    }
         function delQvTyIk(ll,dd=0) {  let a=intervSMART.arr.findIndex( (el) => el.label == ll );
-                                       log(`${fn}: deleting now ${ll} after delay ${dd}ms expiration  at array #${a}`);
+                                       //log(`${fn}: deleting now ${ll} after delay ${dd}ms expiration  at array #${a}`);
                                        if(a>=0) {   clearInterval(intervSMART.arr[a].hnd);  // interval !!!
                                                     clearTimeout(intervSMART.arr[a].hnd2);  // timeout !!! - no mistake here
                                                     intervSMART.arr.splice(a, 1);           } // splice here deletes the element!!!
@@ -327,9 +328,24 @@ function getAllTagMatches (regEx) {
                                                         return aa.replace(/http.*\/\/(www.)*(.*)\?.*/g,'$2');
     }
 
+    
+    
+    
+    // try this in forefox !!!
+    // console.log("dbg1: ", (new Error()).stack?.split("\n")[2]?.trim().split(" ")[1]); // WORKS - shows caller function name !!!
+    // console.log("dbg2: ", (new Error()).stack?.split("\n")[1]?.trim().split(" ")[1]); // WORKS - shows current function name !!!
+
     var       fnName  = getFunctionsNameThatCalledThisFunction;  // get name of currently executing function       //function           gFNTCTF() { return gFNTCTF.caller.name;  }
     function            getFunctionsNameThatCalledThisFunction() {
-                                 return getFunctionsNameThatCalledThisFunction.caller?.name ? getFunctionsNameThatCalledThisFunction.caller?.name : "funcNameUnknown";   // глючит в строгом режиме !!!
+                                 // chrome ok,  firefox fails: return getFunctionsNameThatCalledThisFunction.caller?.name ? getFunctionsNameThatCalledThisFunction.caller?.name : "funcNameUnknown";   // глючит в строгом режиме !!!
+                                 
+                                 
+                                 
+                                 return (new Error()).stack?.split("\n")[2]?.trim().split(" ")[1];
+
+
+
+
                                  // ??? return arguments.callee.caller ??;  // глючит в строгом режиме !!!
                                  // лучше пользовать function doSomething() {  alert(doSomething.name);  }  https://stackoverflow.com/questions/2648293/how-to-get-the-function-name-from-within-that-function
                         }  
@@ -423,7 +439,7 @@ function vsc_font(fntsz="",visibility=0) {  // change of Video Speed Controller 
 		switch (cmd) {
              case "exist":      return 1
              case "exists":     return 1
-             case "getspeed":   bb=aa.shadowRoot.querySelector("#controller > span.draggable")?.innerText;
+             case "getspeed":   bb=aa?.shadowRoot?.querySelector("#controller > span.draggable")?.innerText;
                                 if(bb)   return bb;    else  return 0.001;
                                 break;
              // later make setspeed !!!
@@ -622,3 +638,7 @@ function vsc_font(fntsz="",visibility=0) {  // change of Video Speed Controller 
 	} // QWERTYlayoutFix()
         // console.log("::1::", layoutFix('ghbdtn'));      // -> привет
 	    // console.log("::2::", layoutFix('руддщ', true));  // -> hello
+
+
+
+
