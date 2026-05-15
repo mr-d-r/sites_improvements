@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         MDA youtube playlists
 // @namespace    http://tampermonkey.net/
-// @version      2026.5.15.с
+// @version      2026.5.15.dd
 // @description  started 2024-11-26
 // @author       mr-d-r
 // @license      MIT
