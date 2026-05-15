@@ -11,9 +11,9 @@
 // @exclude      http*://www.google.*/*
 // @icon         https://www.google.com/s2/favicons?sz=64&domain=youtube.com
 // @grant        GM_addStyle
-// @require      https://update.greasyfork.org/scripts/524553/1821889/MDA%20library.js
-// @require      https://update.greasyfork.org/scripts/577495/1821180/Date%20Format%20123.js
-// @require      https://update.greasyfork.org/scripts/577494/1821178/MDA%20youtube%20common.js
+// @require      https://update.greasyfork.org/scripts/524553/MDA%20library.js
+// @require      https://update.greasyfork.org/scripts/577495/Date%20Format%20123.js
+// @require      https://update.greasyfork.org/scripts/577494/MDA%20youtube%20common.js
 // ==/UserScript==
 
 
