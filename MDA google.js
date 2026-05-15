@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         MDA google
 // @namespace    http://tampermonkey.net/
-// @version      1.61
+// @version      1.62
 // @description  adds extra links to useful sites
 // @author       mr-d-r
 // @license      MIT
