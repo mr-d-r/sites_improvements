@@ -1,7 +1,7 @@
 // @name         MDA library
 // @namespace    http://tampermonkey.net/
-// @version      2026.5.11a
-// @description  my JS library
+// @version      2026.5.15
+// @description  my JS library GITHUB
 // @author       mr-d-r
 // ==/UserScript==
 
