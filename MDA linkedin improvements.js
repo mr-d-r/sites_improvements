@@ -7,7 +7,7 @@
 // @license      MIT
 // @match        http*://*.linkedin.com/*
 // @grant        GM_addStyle
-// @require      https://update.greasyfork.org/scripts/524553/1525219/MDA%20library.js
+// @require      https://update.greasyfork.org/scripts/524553/MDA%20library.js
 // ==/UserScript==
 
 // updated 2026 may
