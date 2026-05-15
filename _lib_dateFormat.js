@@ -1,3 +1,11 @@
+// ==UserScript==
+// @name         Date Format 1.2.3 github
+// @namespace    http://tampermonkey.net/
+// @version      1.2.3
+// @description  (c) 2007-2009 Steven Levithan <stevenlevithan.com>
+// @author       Steven Levithan
+// ==/UserScript==
+ 
 /*
 https://blog.stevenlevithan.com/archives/javascript-date-format
 https://stackoverflow.com/questions/9212889/formatting-a-date-in-javascript-till-the-millisecond
