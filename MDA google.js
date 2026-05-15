@@ -14,7 +14,7 @@
 // @grant        GM_addStyle
 // @grant           GM.setValue
 // @grant           GM.getValue
-// @require      https://update.greasyfork.org/scripts/524553/1525219/MDA%20library.js
+// @require      https://update.greasyfork.org/scripts/524553/MDA%20library.js
 // ==/UserScript==
 
 // добавлять поиск ключевых слов по *.md локального обсидиана !!!
