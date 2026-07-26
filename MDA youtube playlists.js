@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         MDA youtube playlists
 // @namespace    http://tampermonkey.net/
-// @version      2026.7.26.aa
+// @version      2026.7.26.bb
 // @description  started 2024-11-26
 // @author       mr-d-r
 // @license      MIT
@@ -15,7 +15,6 @@
 // @require      https://update.greasyfork.org/scripts/577495/Date%20Format%20123.js
 // @require      https://update.greasyfork.org/scripts/577494/MDA%20youtube%20common.js
 // ==/UserScript==
-
 
 
 // !!! супер полезно Improved youtube - bnomihfieiccainjcjblhegjgglakjdd\4.1350_0\js&css\web-accessible\www.youtube.com\playlist-complete-playlist.js
@@ -408,23 +407,29 @@ ttout(700,  ()=>{ // EXPERIMENTAL ttout !!!!!!!!!!!!!!
 	save2playlistResize();  // костыль, надо потом разобраться, почему НЕ работает при инициализации и убрать отсюда !!!
 
 	if (!a) { 	log("23434632 mkCheckedBold()  no table", b); 	return; 	}
-	ab=qSA("tp-yt-iron-dropdown  .ytContextualSheetLayoutContentContainer .ytListViewModelHost[role='list'] .ytListItemViewModelHost");
-	//logwarn(`chkbold: found: ${ab.length} >>> ${ab}`);
+	ab=qSA(`${save2playlistANCHOR} .ytListItemViewModelButtonOrAnchor`);  // was role=list
+	logwarn(`chkbold: found ab length: ${ab.length} >>> ${ab}`);
 
 	// НАДО сначала открыть-закрыть save, а потом проверять !!!
 
 	// делать флажок, чтобы функция отрабатывала полностью !!!
 
-	qSA(`[id^=${t_id}_]`)?.forEach(el=>{   a=el.id.replace(`${t_id}_`,'');	// log("el23423: ", a);  // для всех моих ярлыков
-		ab?.forEach(it=>{	//log(">>", it.getAttribute("aria-label") );
+	qSA(`[id^=${t_id}_]`)?.forEach(el=>{   a=el.id.replace(`${t_id}_`,'');	//log("dbg566_1: ", a);  // для всех моих ярлыков c t_id
+		ab?.forEach(it=>{	//log(">>dbg566_2 aria_label ", it.getAttribute("aria-label") );
 							let rege = new RegExp(`^${a},`, 'gi');      		// от начала строки до запятой !!!
 							if( it.getAttribute("aria-label").match(rege) ) {	// было it.getAttribute("aria-label").match(а) но это кривова-то
-								b=it?.getAttribute("aria-pressed"); 	//logwarn(`chkbold: ${a} ${b}`);
+								b=it?.getAttribute("aria-pressed"); 	//logwarn(`chkbold dbg566 aria-press: ${a} ${b} typeof: ${typeof b}`);
+                                // если aria-pressed существует, то возвращается true/false типа string
+                                // если нет,                     то возвращается null типа object
 								if( b=='true' ) {	intervSMART(0, 'plum1', 'del', null );	intervSMART(0, 'plum2', 'del', null );
 													el.style.fontWeight="bold",  	el.style.fontColor="red", accum=accum +" " +a, 	el.style.backgroundColor='cyan';   // 2 debug more
 												}
 								else 			{	intervSMART(0, 'plum1', 'del', null );	intervSMART(0, 'plum2', 'del', null );
 													el.style.fontWeight="normal",  	el.style.fontColor="blue", 						el.style.backgroundColor='white';  // try gray background !!!!
+												}
+                                if( JSON.stringify(b) == 'null' )   {	//log(" >> ", JSON.stringify(b), "  ", typeof JSON.stringify(b));  // if( typeof b == 'object' )
+                                                              intervSMART(0, 'plum1', 'del', null );	intervSMART(0, 'plum2', 'del', null );
+                                                              el.style.fontWeight="bold";	el.style.fontColor="white";		el.style.backgroundColor='red';
 												}
 					// может стоит добавлять '>' к названию плейлиста ?!?!
 							}
@@ -460,8 +465,8 @@ function clickSaveButton () {  var aa, bb;
 		// после клика ждать пока не появится в DOM
 		// зарядить несколько ttout c проверкой, что появилась в DOM
 
-		//ttout(3000, ()=>{  	// hide_Save2playlistDialog(false);
-		//					ttout(1000, ()=> { save2playlistResize(); });
+		//ttout(3000, ()=>{  	hide_Save2playlistDialog(false);
+		//					// ttout(1000, ()=> { save2playlistResize(); });
 		//});  // make savelist visible again
 	}
 } // clickSaveButton()
@@ -490,10 +495,10 @@ function save2playlist (plname) { var aa, ab, bb,  tto=300;
 
 	ttout(tto, ()=> { var aa, ab, ccc;
 			// ab=qS("ytd-add-to-playlist-renderer")?.querySelectorAll("#checkbox-label.ytd-playlist-add-to-option-renderer > #label");  // pre-2025 way
-			ab=qSA("tp-yt-iron-dropdown  .ytContextualSheetLayoutContentContainer .ytListViewModelHost[role='list'] .ytListItemViewModelHost");
-			log("dropdown found: ", ab ? "ok" : null);
+			ab=qSA(`${save2playlistANCHOR} .ytListItemViewModelHost`);  // was  role='list'
+			logwarn("save2playlist dropdown found: ", ab ? "ok" : null);
 			ab?.forEach(el=>{
-				if( el.getAttribute("aria-label").match(plname) ) { 	log(`--1 ${plname} found`, "\nchcked: ", el.getAttribute("aria-pressed") );
+				if( el.getAttribute("aria-label").match(plname) ) { 	log(`--1 ${plname} found`, "\nchecked: ", el.getAttribute("aria-pressed") );
 						// fails to set custom attribute el.setAttribute("mda_plName", plname);
 						el.click();
 						ccc=CSS.escape(`mdaAJRTE_${plname}`);
@@ -504,8 +509,9 @@ function save2playlist (plname) { var aa, ab, bb,  tto=300;
 						ttout(2000,  ()=>{  mkCheckedBold("save2playlist(): try1 2sec");  });
 						ttout(4000,  ()=>{  mkCheckedBold("save2playlist(): try2 4sec");  });
 						ttout(7000,  ()=>{  mkCheckedBold("save2playlist(): try3 7sec");  });
+						ttout(8000,  ()=>{  intervSMART(0, 'plum1', 'del', null );	intervSMART(0, 'plum2', 'del', null );   });
 						//}
-				}  //else { 		log(`--1else ${plname} found`, "\nchcked: ", el.parentNode.parentNode.parentNode.parentNode.ariaChecked);  }
+				}  //else { 		log(`--1else ${plname} found`, "\nchecked: ", el.parentNode.parentNode.parentNode.parentNode.ariaChecked);  }
 			});
 
 
@@ -516,7 +522,7 @@ function save2playlist (plname) { var aa, ab, bb,  tto=300;
 			// НО эта гребаная блядота не обновляет флаг сразу при нажатии на пункт, т.е. надо переоткрывать меню save to playlist повторно !!!
 
 			//closeSaveButton();
-			//hide_Save2playlistDialog(false);
+			hide_Save2playlistDialog(false);
 	});
 } // save2playlist()
 
