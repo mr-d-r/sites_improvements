@@ -19,6 +19,8 @@ var Save2playlistMenuButton="#mdaSave", 					Save2playlistMenuContent="[aria-lab
 document.Save2playlistClickDONE=false; 			// document var to prevent clicking save2playlist button multiple times simultaneously
 document.Save2playlistClickStillWorking-'n/a'; 	// script name which clicked save2playlist button
 
+var save2playlistANCHOR="tp-yt-iron-dropdown  .ytContextualSheetLayoutContentContainer .ytListViewModelHost[role='menu']";
+
 var isMenuClicked=false; // remove later
 var replAA="+";  // my title for save to playlists button
 
@@ -74,10 +76,16 @@ var ytSavePlaylistButtonAlreadyPressed=false;
 
 
 
+var st193gdea=`	color: navy;  background-color: PaleGreen;  font-weight: bold;  text-align: center;
+				border-radius: 4px; -webkit-border-radius: 4px; -moz-border-radius: 4px; -khtml-border-radius: 4px; border: 2px solid #000; padding-left: 5px; padding-right: 5px;  `; // display: block;
+
 const mdaDateTimeSavelistTBL=`<table id="mdaDateTimeSavelist_tbl" style="font-size: 10px;">	<tbody>
 					<tr id=mdaDateTime_row1>
-						<td id=mdaDateTime_td111>	  <h3 id=mda_datetime> </h3>	</td>
-						<td id=mdaDateTime_inf1> 									</td>
+						<td id=mdaDateTime_td111>	  <h3 id=mda_datetime> ??datetime? </h3>    </td>
+		        		<td id="mdaDateTime_qual"  style="${st193gdea}">   ??qual??             </td>
+        				<td id="mdaDateTime_speed" style="${st193gdea}">   ??speed??            </td>
+						<td> &#x3000; 															</td>
+						<td id=mdaDateTime_inf1> 												</td>
 					</tr>
 	<!--			<tr id=mdaDateTime_row2>
 						<td id=mdaDateTime_filler>					</td>
@@ -99,16 +107,13 @@ function chgSavePlaylist (max='700px') {  // save to playlist dialog window size
 
 // candidate 2 remove !!!   replaced by ThreeDotsMenuClick/Close() !!!
 function hide_Save2playlistDialog (fl) { 	var a='hidden', bb;
-	logdbg("> > > > > > > > hide_Save2playlistDialog ГЛЮК"); //return;
-
 	if(fl) 	a='hidden'
 	else 	a=''; // a='visible'
 
 	// закрывать только если aria-hidden != true !!!
 
-
 	// WORKS, но изображение чуть подрагивает !!!
-	if( bb=qS("tp-yt-iron-dropdown  .ytContextualSheetLayoutContentContainer .ytListViewModelHost[role='list']")?.parentNode?.parentNode?.parentNode?.parentNode?.parentNode ) {
+	if( bb=qS(`${save2playlistANCHOR}`)?.parentNode?.parentNode?.parentNode?.parentNode?.parentNode ) {
 		log(`save butt 46593g2as1: made INVISIBLE`)
 		bb.style.visibility=a;
 		//if(fl) 	bb.style.display='none'
@@ -163,14 +168,14 @@ function save2playlistResize () {  var aa, bb, cc;  // 2025 new save2playlist di
 
 						it.querySelector(".ytListItemViewModelMainContainer").style.height='18px';
 						it.querySelector(".ytListItemViewModelTextWrapper").style.minHeight='11px';
-						if( bb=it.querySelector(".ytListItemViewModelTextWrapper .ytListItemViewModelTitle") ) {  // название плейлиста
-							bb.style.maxHeight='18px'; // высота текста
-							bb.style.fontSize='12px'; // размер шрифта
-						}
+						// if( bb=it.querySelector(".ytListItemViewModelTextWrapper .ytListItemViewModelTitle") ) {  // название плейлиста - ЗАКОММЕНТИЛ, т.к. перестало нормально работать
+						// 		bb.style.maxHeight='18px'; // высота текста
+						//	 	bb.style.fontSize='12px'; // размер шрифта
+						// }
 						it.querySelector(".ytListItemViewModelImageContainer").style.height='20px'; // но лучше играться со стилем .ytListItemViewModelImageContainer
 						if( bb=it.querySelector(".ytListItemViewModelImage") ) {  // флажок
 							bb.style.height='13px';
-							bb.style.maxHeight='18px';
+						  	bb.style.maxHeight='18px';
 						}
 						if( bb=it.querySelector(".ytListItemViewModelLayoutWrapper") ) {  // padding всей ячейки
 							bb.style.paddingTop='1px';
@@ -373,9 +378,9 @@ function Save2playlistClick () {  	var bu, co, _clicked=false, fn="Save2playlist
 
 			if( co ) { // check if content appeared
 						loginf(`${fn}: Save2playlist content found `, co);
-						// tmp disabled    co.style.visibility="hidden";   co.setAttribute("mdaid", 'opened');
-						// tmp disabled    hide_Save2playlistDialog(true);
-						//co.style.display="none";
+						co.style.visibility="hidden";   co.setAttribute("mdaid", 'opened'); 	// was tmp disabled
+						hide_Save2playlistDialog(true);   										// was tmp disabled
+						co.style.display="none"; 												// was tmp disabled
 
 						// какая-то херня с bu
 						//ttout(200, ()=> { _closeSave2playlist(bu, co); });
@@ -422,3 +427,4 @@ function showmsg_mdaDateTime_inf1 (msg, delay=2500) {  var aa, save;
 		ttoutSMART(delay+100, 	'DateTime_inf1_a', 	'set', ()=>{		aa.innerHTML=save; 		});
 	} else loginfo("showmsg_mdaDateTime_inf1(): no #mdaDateTime_inf1 found");
 }
+
