@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         MDA youtube playlists
 // @namespace    http://tampermonkey.net/
-// @version      2026.5.15.ee
+// @version      2026.7.26.aa
 // @description  started 2024-11-26
 // @author       mr-d-r
 // @license      MIT
@@ -23,6 +23,7 @@
 // 	getPlaylistId, playlist_id    ytd-playlist   YouTube's edit_playlist API
 
 
+//    #! ECMAscript 2023 comment - does not work
 
 
 
@@ -239,7 +240,7 @@ function closeChaptersInFullscreen () { var aa
 
 window.matchMedia('(display-mode: fullscreen)').addListener(({ matches }) => {  var aa;
     if (matches) {
-        log(">fullscreen !!!  ", document.fullscreenElement=true); // Apply fullscreenmode mode related changes
+        log("fullscreen !!!  ", document.fullscreenElement=true); // Apply fullscreenmode mode related changes
 		closeChaptersInFullscreen();
 		ttout(100,  ()=>{ closeChaptersInFullscreen() });
 		ttout(300,  ()=>{ closeChaptersInFullscreen() });
@@ -317,12 +318,12 @@ function crTable () { var pEl, htm, a, b, t, anch;
 			border-radius: 10px; -webkit-border-radius: 10px; -moz-border-radius: 10px; -khtml-border-radius: 10px; border: 1px solid #000; padding-left: 2px; padding-right: 5px;  `; // display: block;
 	if( typeof MDAytlib == "undefined" )  {  log("1122947652 no youtube lib included - exiting");  return;  }
 
-	pEl=qS("#above-the-fold > #title");
+	pEl=qS("#above-the-fold > #title-row");
 	if (!pEl) { 	if(dbg) log("2745632 parent #above-the-fold > #title  is NOT FOUND", pEl);		return; 		}
 
 //	 a=qS("#mdaDateTimeSavelist_tbl");
 	a=qS("#mdaSavelist_tbl");
-//	if (!a) { 	b=pEl.appendChild( fromHTML123(mdaSavelistTBL) );				log("2745632 NEW TABLE --- ", b); 	}
+//	if (!a) { 	b=pEl.appendChild( fromHTML123(mdaSavelistTBL) );				log("2745632 NEW savelist TABLE --- ", b); 	}  else logerr("2745632 NEW savelist TABLE --- FAILED ", b);
 	if (!a) { 	b=pEl.insertAdjacentHTML('afterbegin', mdaSavelistTBL); 	};  //logwarn("2745632 NEW TABLE --- ", b); 	}
 
 	if( t=qS(`#${t_id}_dummy12133`) )  {  log("--- already created", t);  return;  }
@@ -347,11 +348,13 @@ function crTable () { var pEl, htm, a, b, t, anch;
 				<td style="${st}" id="${t_id}_films" 	  title="Фильмы"> 				&nbsp;&nbsp;&#x1F39E;&nbsp;		</td>
 				<td style="${st}" id="${t_id}_музыка" 	  title="Музыка"> 				&nbsp;&nbsp;&#x1F39D;&nbsp;		</td>
 				<td style="${st}" id="${t_id}_аудиокниги" title="Аудиокниги"> 			&nbsp;&#x1F509;&nbsp;&#x1F56E;	</td>
-				<td style="${st}" id="${t_id}_lifehacks"  title="Лайфхаки">				&nbsp;&#x1F6E0;&nbsp;&#x2699;		</td>
+				<td style="${st}" id="${t_id}_lifehacks"  title="Лайфхаки, DIY">		&nbsp;&#x1F6E0;&nbsp;&#x2699;		</td>
 				<td style="${st}" id="${t_id}_здоровье"   title="Здоровье"> 			&nbsp;&#x2695;&nbsp;&#x1F48A;		</td>
 
-				<td 			  id="${t_id}_dummy12133"></td>
+                <td 			  id="${t_id}_dummy12133"></td>
 				`
+  		      	// obsoleted mdaAJRTE_qual				<td style="${st}" id="${t_id}_qual"		  title="Video quality">		?quality?				</td>
+				// 			 mdaAJRTE_speed				<td style="${st}" id="${t_id}_speed"	  title="Video speed"> 			?speed?					</td>
 
 		if( !a ) {  anch.insertAdjacentHTML('beforeend', htm);						log('---crTable() new: ', qS(`#${t_id}_11`) );
 					qS(`#${t_id}_беларусь`)?.addEventListener("click", onclick110);	function onclick110() {  	save2playlist('беларусь');  	}
@@ -384,6 +387,7 @@ function crTable () { var pEl, htm, a, b, t, anch;
 		qS(`#${t_id}_польша`)?.addEventListener(			"click", onclick233);	function onclick233() {  	save2playlist('польша');  	}
 
 		qS(`#${t_id}_${CSS.escape("старое - ностальгия")}`)?.addEventListener("click", onclick216);	function onclick216() {  	save2playlist('старое - ностальгия');  	}
+		qS(`#${t_id}_travel`)?.addEventListener(			"click", onclick235);	function onclick235() {  	save2playlist('travel');  	}
 	}
 } // crTable()
 
