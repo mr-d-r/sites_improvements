@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         MDA youtube common
 // @namespace    http://tampermonkey.net/
-// @version      1.0.3
+// @version      1.0.4
 // @description  my JS YT library GITHUB
 // @author       mr-d-r
 // ==/UserScript==
