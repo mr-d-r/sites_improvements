@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         MDA youtube SaveButt Datetime Jumps ADs
 // @namespace    http://tampermonkey.net/
-// @version      1.0.7
+// @version      1.1.0
 // @description  started 2024-11-26
 // @author       mr-d-r
 // @license      MIT
@@ -22,9 +22,14 @@
 
 
 
-//
-//
+// showRealRemainTime - делать общий именованный перезапускающийся таймер когда приходит событие и от клавы и от мыши !!!
+
+
+// mdaSetSpeed(1.44) работает только при нажатии кнопки - траблшутить !!!
+
+
 // показывать качество и скорость видео во всплывающем блоке выше ползунка !!!!!!!!!!!
+// 		идеальный пример - штатный блок like/dislike/show commnents/tree_dots == ytp-overlay-bottom-right  ytp-overlay-inline-container ytp-fullscreen-quick-actions
 //
 //
 
@@ -176,21 +181,19 @@ if( location.href.match(/www.youtube.com\/embed\/\?enablejsapi/) )  {  console.l
         }
 
 
-	function showRealRemainTime (caller="") {   var a, b, mda_overl, secC, secT, secRem, secRemDivSpeed, tC, tT, tR, tRDS, spd, RUNMAN='&#x1F3C3;-';
+	function showRealRemainTime (caller="") {   var a, b, aa, mda_overl, secC, secT, secRem, secRemDivSpeed, tC, tT, tR, tRDS, spd, RUNMAN='&#x1F3C3;-';
         // доделать чтобы пересчитывало по кнопкам и mousemove !!!
         //     вешать таймер, чтобы щелкало только если полоска внизу плеера видима - пока ytp-progress-bar aria-valuenow меняется!!!
+
+                        logwarn("--- showRealRemainTime !!! " +caller);
 
 		a=qS(".ytp-time-current");                                		b=qS(".ytp-time-duration");
 			// лучше брать из document.querySelector(".ytp-chrome-bottom .ytp-progress-bar").getAttribute("aria-valuenow") и aria-valuemax
 
-		//log("showRealRemainTime " + caller,a,b);
-// 2del	spd=vsc_control("getspeed","showRealRemainTime()");		    	if( !spd ) 	spd=qS('.html5-main-video')?.playbackRate;        // 2debug: if( !isNumber(spd) )  spd=1;
-//		spd=vsc_control("getspeed");		   						 	if( !spd ) 	spd=qS('.html5-main-video')?.playbackRate;        // 2debug: if( !isNumber(spd) )  spd=1;
 		spd=getSpeed();
 		if( !a || !b || !spd ) return;
         if( ! a?.innerText ) return;
 		secC=hmsToSec( a?.innerText ) *1000;							tC=new Date(secC).toISOString().substr(11, 8);
-		//secT=hmsToSec( b?.innerText.replace(/\(.*\)/,'') ) *1000;		tT=new Date(secT).toISOString().substr(11, 8);  // old way
 		secT=hmsToSec( b?.innerText.replace(/ .*/,'') ) *1000;		    tT=new Date(secT).toISOString().substr(11, 8);
         secRem=secT-secC;        										tR=		new Date(secRem        ).toISOString().substr(11, 8).replace(/^00:/g, '');
         secRemDivSpeed=(secT-secC)/spd; 								tRDS=	new Date(secRemDivSpeed).toISOString().substr(11, 8).replace(/^00:/g, '');
@@ -205,23 +208,19 @@ if( location.href.match(/www.youtube.com\/embed\/\?enablejsapi/) )  {  console.l
 
 		//b.innerHTML=`${new Date(secT).toISOString().substr(11, 8).replace(/^00:/g, '')} (${RUNMAN}${tRDS})`;   // - ${spd}x)`;     // в скобках
 
-		if( mda_overl=qS("#mda_overl") ) {
-			a=selectQuality("get");		b=spd; // getSpeed();
+		a=selectQuality("get");		b=spd; 	// getSpeed();
+        if( aa=qS("#mdaDateTime_qual") ) 		aa.innerHTML=a;
+        //if( aa=qS("#mdaAJRTE_qual") ) 		aa.innerHTML="&nbsp;" +a,         settt_st(aa);  // obsoleted
+        if( aa=qS("#mdaDateTime_speed") ) 		aa.innerHTML=b +"x";
+        //if( aa=qS("#mdaAJRTE_speed") ) 		aa.innerHTML="&nbsp;" + b +"x",   settt_st(aa);   // obsoleted
+
+		if( mda_overl=qS("#mda_overl") ) { 		// logwarn("mda_overl 34rts67");
 			if(isMobile)			 	mda_overl.innerHTML=`&#x3000;&#x1F5B5; ${a} &#x3000;${b}x ${RUNMAN}${tRDS}`;	// shows quality, speed, remaining time
 			else 						mda_overl.innerHTML=`&#x3000;&#x1F5B5; ${a} &#x3000;${b}x`;  					// shows only quality and speed
 		}
 
+		function settt_st(aa) {  aa.style.backgroundColor="PaleGreen",    aa.style.borderRadius="3px";    aa.style.fontWeight="bold";    aa.style.cursor="auto";	}
 	} // showRealRemainTime()
-
-
-
-function getSpeed () {  // get youtube/vsc speed
-		var bb, aa=vsc_control("getspeed");
-		if ( aa ) 	return aa;
-		else 		return document.querySelector(".video-stream.html5-main-video")?.playbackRate;  // youutube speed
-} // getSpeed()
-
-
 
 
 function showMsgYTplayer (msg, delay) {  var aa;
@@ -301,6 +300,8 @@ function removeShit (forcedClick=0)  {
 			a=qS('[aria-label="Clip"]'); 				if (a) {	if (dbg) log("removeShit():  clip is found"); 		a.remove(); 		}
 			a=qS('[aria-label="Download"]');	 		if (a) {	if (dbg) log("removeShit():  downl is found"); 		a.remove(); 		}
 			a=qS('[aria-label="Thanks"]');				if (a) {	if (dbg) log("removeShit():  thanks is found"); 	a.remove(); 		}
+			a=qS('[aria-label="Share"]');				if (a) {	if (dbg) log("removeShit():  share is found"); 	a.remove(); 		}
+			a=qS('[aria-label="Join this channel"]');	if (a) {	if (dbg) log("removeShit():  join is found"); 	a.remove(); 		}
 			// no need to remove a=document.querySelector('[aria-label="More actions"]');
 
 			// inside THREE dots menu
@@ -559,17 +560,17 @@ function toggleYtOverlaysAtTheEndOfVideo (fl=0) {
 
 
   function selectQuality (qual, v, e, c) {
-	var i, qq, aba;
-    if ((v = document.querySelector('.html5-video-player')) && (v.getAvailableQualityLabels().length > 1)) {
-	  qq=v.getAvailableQualityLabels(); 				// console.log("quality arr: ", qq);
+	var i, ii, qq, aba;
+    if ((v = document.querySelector('.html5-video-player')) && (v.getAvailableQualityLabels().length >= 1)) {
+	  qq=v.getAvailableQualityLabels(); 				// console.log("34rts67 quality arr: ", qq);
       if (qual === "get") {
 		(e = v.getAvailableQualityLevels()).pop(); 		c = e.indexOf(v.getPlaybackQuality());
-		//showMsgVSC("Current: " +qq[c], 2500);  			// log(c, '\n', aa[c]);
+		//showMsgVSC("Current: " +qq[c], 2500);  		// log(c, '\n', aa[c]);
 		return qq[c];
 	  }
       if (qual === "A") {
         v.setPlaybackQualityRange("auto", "auto"); 		// console.log("qweasdzxc auto");
-		showMsgVSC("Quality Auto", 2500);
+		showMsgVSC("Quality: Auto", 2500);
       } else {
         (e = v.getAvailableQualityLevels()).pop();
         c = e.indexOf(v.getPlaybackQuality()); 			// console.log("curr qual c=", c, '\n', qq[c]);
@@ -577,8 +578,13 @@ function toggleYtOverlaysAtTheEndOfVideo (fl=0) {
 		if(qual == "dn") 	{ i=1; 		aba=((c+i)>(qq.length-1))	? qq.length-1 	: c+i;  }
 		if(qual == "max") 	{ i=-c;				aba=c+i;						} // jump to max quality, which index is 0, 			so c+i must give 0
 		if(qual == "min") 	{ i=qq.length-1-c; 	aba=c+i;						} // jump to min quality, which index is qq.length-1, 	so c+i must give qq.length-1
-		if (e = e[c + i]) v.setPlaybackQualityRange(e, e); 	//	if (e = e[c + i]) setTimeout(() => {    v.setPlaybackQualityRange(e, e);  }, 500);
-		showMsgVSC(qq[c] +" -> " +qq[aba], 2500);  		// console.log("next qual ", aba, '\t', qq[aba]); 	// console.log("c=" +c, '\n', "i=" +i);
+		ii=e.findIndex((el) => el==qual);  	if(ii>=0) 	{ 	// log(qual," found at ", ii);    // есть ли поданный qual например hd1080 в массиве возможных разрешений
+															v.setPlaybackQualityRange(qual, qual);  // именно в виде текста "hd1080"
+															return 0;
+		}
+ 		//logwarn(qual, "==   e:", e, "  \n e[c + i]:", e[c + i], "\n e==e[c + i]?:", e==e[c + i]);
+		if (e = e[c + i]) v.setPlaybackQualityRange(e, e); 		// если элемент e[c + i] существует, то он присвоится в e
+		showMsgVSC(qq[c] +" -> " +qq[aba], 2500);  				// console.log("next qual ", aba, '\t', qq[aba]); 	// console.log("c=" +c, '\n', "i=" +i);
       }
     }
   }
@@ -586,7 +592,7 @@ function toggleYtOverlaysAtTheEndOfVideo (fl=0) {
 
 document.addEventListener("keydown", (e) => {
 		var j, set=false, aa, bb, za, np="";
-		// moved to MDAlib  function anyActiveInput() {   const inputs = document.querySelectorAll("input,textarea");    return Array.from(inputs).includes(document.activeElement);    }
+		// moved to MDAlib  function () {   const inputs = document.querySelectorAll("input,textarea");    return Array.from(inputs).includes(document.activeElement);    }
 		if( anyActiveInput() ) 	return; 					//if ((aaBB = document.activeElement) && (editable(a) || (a.tagName === "INPUT") || (a.tagName === "TEXTAREA"))) return;
 
 		//aa=qS("div.html5-video-player");
@@ -594,8 +600,8 @@ document.addEventListener("keydown", (e) => {
 		//else 											ttout(10,   ()=>{  	qS("body")?.focus();	}); 		// FAILS focus on body if it is NOT visible
 
 	    //log(e.code);
-		showRealRemainTime();  // immediately
-		for(let i=1;i<=5;i++) {		ttout(i*1000, ()=>{  		showRealRemainTime(); 		});			} 	// five iterations
+		showRealRemainTime("keydown immed");  // immediately
+		for(let i=1;i<=5;i++) {		ttout(i*1000, ()=>{  		showRealRemainTime("keydown 5 iterations"); 		});			} 	// five iterations while overlay is on
 
 		switch (e.code) {
 	        case "KeyR":  // show speed and quality !!!
@@ -605,6 +611,7 @@ document.addEventListener("keydown", (e) => {
 	            break;
 
 	        case "KeyQ":  // ex.keyA
+				if (!set && event.altKey)						{ 	selectQuality("A");		set=1; 	} // quality: auto
 				if (!set && event.shiftKey && event.ctrlKey)	{ 	selectQuality("A");		set=1; 	} // quality: auto
 				if (!set && event.shiftKey) 					{ 	selectQuality("max");	set=1; 	}
 				if (!set) 										{ 	selectQuality("up"); 	set=1; 	}
@@ -612,10 +619,10 @@ document.addEventListener("keydown", (e) => {
 				if (set) 										{ 	e.preventDefault();		e.stopImmediatePropagation();	}
 	            break;
 	        case "KeyA":  // ex.keyZ
-				if (!set && event.shiftKey && event.ctrlKey)	{ 	aa=selectQuality("get");	set=1; 	showMsgVSC("Current: " +aa, 2500);  } // get current quality
-				if (!set && event.altKey)                    	{ 	aa=selectQuality("get");	set=1; 	showMsgVSC("Current: " +aa, 2500);  } // get current quality
-				if (!set && event.shiftKey) 					{ 	selectQuality("min");	set=1; 	}
-				if (!set) 										{ 	selectQuality("dn"); 	set=1; 	}
+				if (!set && event.shiftKey && event.ctrlKey)		break; // ctrl-shift-a is chrome shortcut to search tabs
+				if (!set && event.altKey)                    	{ 	selectQuality("hd1080"); set=1; 	showMsgVSC("Set 1080p", 2500);  }
+				if (!set && event.shiftKey) 					{ 	selectQuality("min");	 set=1; 	}
+				if (!set) 										{ 	selectQuality("dn"); 	 set=1; 	}
 				if (event.ctrlKey)								{ 	document.activeElement.blur();	 break; 	} // to allow normal Ctrl-Z
 				if (set) 										{ 	e.preventDefault();		e.stopImmediatePropagation();	}
 	            break;
@@ -659,7 +666,8 @@ document.addEventListener("keydown", (e) => {
 	        case "KeyD":
 				if (event.shiftKey  ||  event.ctrlKey  ||  event.altKey)  break;
 				//click_show_more_replies();
-				showRealRemainTime();
+				showRealRemainTime("keyD");
+                mdaSetSpeed(1.44);
 				//vsc_font("",0); // vsc_font("23px",1);
 				return;
 
@@ -825,7 +833,7 @@ function showDateTime (triesCNT, showdelay=2000)  { 	// shows exact date/time ri
 
 		if( typeof MDAytlib == "undefined" )  {  log("1177294552 no youtube lib included - exiting");  return;  }
 
-		pEl=qS("#above-the-fold > #title");
+		pEl=qS("#above-the-fold > #title-row");
 		if (!pEl) { 	if(dbg) log("parent #above-the-fold > #title  is NOT FOUND", pEl);		return; 	}
 
 		a=qS("#mdaDateTimeSavelist_tbl");
@@ -840,7 +848,8 @@ function showDateTime (triesCNT, showdelay=2000)  { 	// shows exact date/time ri
 									setTimeout(()=>	{	if(b) b.style.display="none";									},showdelay);
 
 		pEl=qS("#mdaDateTime_row1");
-		htm=`<td id="mdaDateTime_td111">	<h3 id=${mydivID}>	${mkdate(dt1)}	</h3>	</td>`; 		// mydiv.style.position="relative";		mydiv.setAttribute("style",`width:auto; height:auto; top:10%; left:5%;  padding: 10px;  color:Silver; font-size:15px; background-color:#00008B; z-index:99;`); //	opacity:0.9;   text-shadow: 5px 5px 20px #00FF00;`);
+		htm=`	<td id="mdaDateTime_td111">td111</td>
+				<td> <h3 id=${mydivID}>	${mkdate(dt1)}	</h3>	</td>`; 		// mydiv.style.position="relative";		mydiv.setAttribute("style",`width:auto; height:auto; top:10%; left:5%;  padding: 10px;  color:Silver; font-size:15px; background-color:#00008B; z-index:99;`); //	opacity:0.9;   text-shadow: 5px 5px 20px #00FF00;`);
 		a=qS(`#${mydivID}`);  // doublecheck, т.к. эту таблицу конкурентно создает и MDA youtube playlists
 		if( !a ) {  a=pEl.appendChild(fromHTML123(htm));		log("showDateTime(): NEW --- ", a);  }
 	}
@@ -894,7 +903,7 @@ function 	myOnChange (caller, delay, forcedClick, showdelay=2000) {
 											setTimeout(() => 	{ 	dragSaveButton(forcedClick); 	click_show_more_replies();  removeShit(0);	},delay);
 											showDateTime(caller, showdelay);
 											showDateTime(caller, showdelay*2);
-											showRealRemainTime();
+											showRealRemainTime("onChange");
 											LikeDislike_n_Other_Reshape();
                                             removeSomeADs();
 									}
@@ -1033,6 +1042,12 @@ function mda_showRemain_overlay () { 	var aa, bb;  // показывает ка�
 } // mda_showRemain_overlay()
 
 
+function mdaSetSpeed (sss) {  var aa;
+	if( aa=qS("#player-container video") ) 	{ aa.playbackRate=sss;   log("youtube video found on the page"); }
+	else 					logerr("no youtube video found to set the speed !!!");
+} // mdaSetSpeed()
+
+
 window.addEventListener('load', function() { var aa, bb;  // onload
 	console.log(`${GM.info.script.name} ===> on load event`);
 
@@ -1042,20 +1057,17 @@ window.addEventListener('load', function() { var aa, bb;  // onload
 				sessionStorage.setItem('mdaYT', '111');
 	}*/
 
-		func1(sc, "immed");
-		func2(sc, "immed");
-		ttout(10, ()=>{ func2(sc, "10 ms delay"); });
-
-		ttout(720, ()=>{ func2(sc, "720 ms delay"); });
-		ttout(750, ()=>{ func2(sc, "750 ms delay"); });
-		ttout(800, ()=>{ func2(sc, "800 ms delay"); });
-		ttout(1000, ()=>{ func2(sc, "1000 ms delay"); });
-		ttout(1200, ()=>{ func2(sc, "1200 ms delay"); });
-
+		//func1(sc, "immed");
+		//func2(sc, "immed");
+		//ttout(10, ()=>{ func2(sc, "10 ms delay"); });
+		//ttout(720, ()=>{ func2(sc, "720 ms delay"); });
+		//ttout(750, ()=>{ func2(sc, "750 ms delay"); });
+		//ttout(800, ()=>{ func2(sc, "800 ms delay"); });
+		//ttout(1000, ()=>{ func2(sc, "1000 ms delay"); });
+		//ttout(1200, ()=>{ func2(sc, "1200 ms delay"); });
 
 	TrustedHTMLworkaround2();  	// TrustedHTMLworkaround();
 	//document.body.style.visibility='hidden';
-
 
 
 	const obs1 = new MutationObserver((mutations, ob) => {
@@ -1080,8 +1092,11 @@ window.addEventListener('load', function() { var aa, bb;  // onload
     removeSomeADs();
 	removeShit(0);
 
-	setTimeout(() => 	{	showRealRemainTime("onLOAD");			},200);
+	setTimeout(() => 	{	showRealRemainTime("onLOAD 1 --- --- --- ");			},300);
 	setTimeout(() => 	{	showDateTime(2); 	removeSomeADs();	},600);
+	setTimeout(() => 	{	showRealRemainTime("onLOAD 2 --- --- --- ");			},2000);
+	setTimeout(() => 	{	mdaSetSpeed(1.44);										},2000);
+	setTimeout(() => 	{	mdaSetSpeed(1.44);										},4000);
 
 	// УБРАЛ intervSMART тут из-за глюка *GD755*
 	//	 intervSMART(1000, 	"showRealRemainTime_interv111", 'set',   ()=>{ 	showRealRemainTime("onINTERV");        });  // set interval
@@ -1100,7 +1115,7 @@ window.addEventListener('load', function() { var aa, bb;  // onload
 								}
     });
 
-	ttout(1500,  ()=>{	window.scrollTo(0, 0); 		// workaround, т.к. на некоторых страницах делается самопроизвольный scroll на экран вниз
+	ttout(1500,  ()=>{	//window.scrollTo(0, 0); 		// workaround, т.к. на некоторых страницах делается самопроизвольный scroll на экран вниз
 						// pageDown_onLoad(); click_show_more_replies();
 						dragSaveButton(0);	removeShit(0);	showDateTime(2);	removeSomeADs();	rightFocusOnVideosPage("on load2");	wake();   //addSaveButton();
 						//chgSavePlaylist('900 px');  // obsoleted  save to playlist dialog window size
@@ -1112,7 +1127,7 @@ window.addEventListener('load', function() { var aa, bb;  // onload
 						});
     });
 
-	ttout(3500,  ()=>{	window.scrollTo(0, 0); 		// workaround, т.к. на некоторых страницах делается самопроизвольный scroll на экран вниз
+	ttout(3500,  ()=>{	//window.scrollTo(0, 0); 		// workaround, т.к. на некоторых страницах делается самопроизвольный scroll на экран вниз
 						dragSaveButton(0); 	removeShit(0);	showDateTime(3);	removeSomeADs();	rightFocusOnVideosPage("on load3");	wake();
 						LikeDislike_n_Other_Reshape();
 						// deleteElement("#columns #secondary"); logwarn("tmp remove secodary column with recommended videos"); // tmp workaround // remove secodary column with recommended videos
@@ -1139,9 +1154,9 @@ window.addEventListener('mousemove', e => {
 									if ( (Date.now()-tickCURR1) > 350 ) {
 										//if (dbg)
 										log("mousemove: finally fire");	clearInterval(tickPROC1);	tickPROC1=null;
-										showRealRemainTime();  // immediately
+										showRealRemainTime("mouse move");  // immediately
 										mda_showRemain_overlay(); // временно воткнул, проверить какая будет нагрузка на cpu !!!
-										for(let i=1;i<=25;i++) {		ttout(i*400, ()=>{  		showRealRemainTime(); 		});			} 	// five iterations
+										for(let i=1;i<=25;i++) {		ttout(i*400, ()=>{  		showRealRemainTime("mouse move 25 iterations"); 		});			} 	// five iterations
 									}
 						}, 400);
 	}
