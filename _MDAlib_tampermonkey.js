@@ -1,18 +1,9 @@
 // @name         MDA library
 // @namespace    http://tampermonkey.net/
-// @version      2026.5.15bb
+// @version      2026.07.26.abc
 // @description  my JS library GITHUB
 // @author       mr-d-r
 // ==/UserScript==
-
-
-
-
-
-//      выложил на github mr-d-r
-//                 не оставлять тут ничего личного !!!
-
-
 
 
 // @require  file://D:\...\_MDAlib_tampermonkey.js ВСЕГДА добавляет в самое начало скрипта, где он использован
@@ -449,6 +440,12 @@ function vsc_font(fntsz="",visibility=0) {  // change of Video Speed Controller 
 	} // vsc_control()
 
 
+    function getSpeed () {  // get youtube/vsc video speed
+		var bb, aa=vsc_control("getspeed");
+		if ( aa ) 	return aa;
+		else 		return document.querySelector(".video-stream.html5-main-video")?.playbackRate;  // youtube speed
+    } // getSpeed()
+
 
 //   fu nc tion waitElement(ele) {  // rc=1 - FOUND
 
@@ -638,7 +635,3 @@ function vsc_font(fntsz="",visibility=0) {  // change of Video Speed Controller 
 	} // QWERTYlayoutFix()
         // console.log("::1::", layoutFix('ghbdtn'));      // -> привет
 	    // console.log("::2::", layoutFix('руддщ', true));  // -> hello
-
-
-
-
