@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         MDA google
 // @namespace    http://tampermonkey.net/
-// @version      1.62
+// @version      1.63
 // @description  adds extra links to useful sites
 // @author       mr-d-r
 // @license      MIT
@@ -17,11 +17,13 @@
 // @require      https://update.greasyfork.org/scripts/524553/MDA%20library.js
 // ==/UserScript==
 
-// добавлять поиск ключевых слов по *.md локального обсидиана !!!
+// === добавлять поиск ключевых слов по *.md локального обсидиана  obsidian search query="meeting notes"  !!!
+// 		лучше это сделать через Obsidian CLI  https://obsidian.md/help/cli   https://obsidian.md/cli
+// 		или Obsidian API 	https://www.reddit.com/r/ObsidianMD/comments/1o2zwsm/is_it_possible_to_interact_with_obsidian_api_from/
+// 							!!! https://github.com/coddingtonbear/obsidian-local-rest-api
+// 		!!! https://forum.obsidian.md/t/show-search-query-results-in-terminal-with-cli/111935
 
 // растянуть вниз поле поиска, чтобы мои йцукен-qwerty при прокрутках не висели в воздухе !!!
-
-
 
 // делать qwerty <<->> йцукен по Q b исовать только одну кнопку
 
@@ -90,8 +92,8 @@
 					.mda_td 	{	padding-left: 1px; 		padding-right:  19px;	padding-bottom: 3px;	}
 				`;
 
-		var htm=`	<div id="mda_tab" style="font-size: 15px;">
-						<table class="mda_tab" style="position:relative left: -1px;  margin-bottom: 1px">
+		var htm=`	<div id="mda_tab"  style="font-size: 15px;  padding-left: 10px;  margin-bottom: 1px">
+						<table class="mda_tab">
 							<tbody>
 								<tr id="mda1row_1" class="mda_tr">						</tr>
 								<tr id="mda1row_2" class="mda_tr">						</tr>
@@ -101,16 +103,17 @@
 						</table>
 					</div>
 		`;			// DivTable.com  https://divtable.com/generator/
+                                         // was style="position:relative center: 10px;  margin-bottom: 1px"
 
 		tit = chkCorrectedText(fn);
 
 		if( upd   )  qS("#mda_tab")?.remove();   // если upd = true,  то сносим существующий #mda_tab, чтобы пересоздать заново
 
-		if( !anch )  anch=qS(".main div[jscontroller] [jsname][data-scca][data-ved]");  // right below google menu - КРАСИВЫЙ ЛЕВЫЙ ОТСТУП
-		if( !anch )  return;
+		if( !anch )  anch=qS(".main div[jscontroller]");  // right below google menu - КРАСИВЫЙ ЛЕВЫЙ ОТСТУП  old: ".main div[jscontroller] [jsname]"
+                                         // old  (".main div[jscontroller] [jsname][data-scca][data-ved]") гугл упразднил
+		if( !anch )  { logerr("no ancor ", anch); return; }
 		aI=qS("#mda_tab"); if( !aI ) 	{	// log(`${GM.info.script.name} make extra links,  anch=`, anch);
-			anch.insertAdjacentHTML('afterend', htm);		GM_addStyle(tcss);
-			aI = fillTD("mda1row_1",  "google maps", 	tit, "https://www.google.com/maps/place/", 			anch);
+			anch.insertAdjacentHTML('beforeend', htm);		GM_addStyle(tcss);   // old insertAdjacentHTML('afterend', htm)
 			aI = fillTD("mda1row_1",  "wiki RU", 	tit, "https://ru.wikipedia.org/w/index.php?search=", 	anch);
 			aI = fillTD("mda1row_1",  "wiki EN", 	tit, "https://en.wikipedia.org/w/index.php?search=", 	anch);
 
@@ -264,3 +267,4 @@
 
 
 })(); // script
+
